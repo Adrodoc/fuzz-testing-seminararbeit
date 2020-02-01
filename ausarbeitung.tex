@@ -61,7 +61,7 @@ Verhält sich das Programm anders als von den Orakeln vorgegeben, so schlägt de
 
 EvoSuite versucht nun diesen Prozess zu vereinfachen, indem es Unittests generiert, die das Verhalten des Programms möglichst gut beschreiben.
 Ein Softwaretester muss sich dann nicht mehr selbst Szenarien überlegen, sondern nur noch die generierten Testfälle auf unerwartetes Verhalten prüfen.
-Dazu nutzt EvoSuite einen genetischen Algorithmus mit dem zufällige Testfälle immer weiter verbessert werden, bis sie eine möglichst hohe Testabdeckung erreichen.
+Dazu nutzt EvoSuite einen genetischen Algorithmus mit dem zufällige Test-fälle immer weiter verbessert werden, bis sie eine möglichst hohe Testabdeckung erreichen.
 Die Testfälle werden dann minimiert um die Arbeit des Softwaretesters zu vereinfachen und es werden mit sogenanntem \textit{Mutation-Testing} möglichst repräsentative Orakel ausgewählt.
 
 EvoSuite wurde seit 2010 immer weiter entwickelt und es sind verschiedene Algorithmen für das generieren von Testfällen implementiert, die über die Kommandozeile ein- und ausgeschaltet werden können.
@@ -70,9 +70,29 @@ Um den vorgegebenen Umfang einzuhalten, kann diese Seminararbeit nur Überblick 
 
 \section{Genetische Algorithmen}
 
+Genetische Algorithmen gehören zu den Evolutionären Algorithmen.
+Die Idee dabei ist es, den Prozess der Evolution und natürlichen Auslese aus der Biologie zu simulieren, um Optimierungsprobleme zu lösen.
+Dazu werden Lösungskandidaten für das Optimierungsproblem als Individuen betrachtet.
+Die Menge der betrachteten Individuen nennt man auch Population oder Generation.
+Ausgehend von einer Anfangspopulation werden zufällig mit \textit{crossover} und Mutation neue Individuen erzeugt und anhand einer Fitnessfunktion bewertet.
+Anhand von der Bewertung wird eine Menge der Individuen ausgewählt um die neue Population zu bilden.
+Die restlichen Individuen werden verworfen.
+
+Dieser iterative Prozess wird so lange ausgeführt, bis ein Individuum gefunden wurde, welches das Optimierungsproblem optimal löst, bis eine vorgegebene Anzahl an Generationen entwickelt wurde, oder bis die verfügbare Zeit aufgebraucht ist.
+In jedem Fall ist das Ergebnis des genetischen Algorithmus das beste Individuum.
+
+Um ein konkretes Optimierungsproblem mit einem genetischen Algorithmus zu lösen, muss genau definiert werden, was ein Individuum ist, aus welchen Individuen die Anfangspopulation besteht, wie die \textit{crossover}- und Mutationsoperatoren neue Individuen erzeugen und wie die Fitnessfunktion aussieht.
+Dies ist von Problem zu Problem unterschiedlich.
+
 \section{Erzeugen von Testfällen durch Optimierung der Testabdeckung}
 
+Dieser Abschnitt stützt sich vor allem auf \cite{TSE12_EvoSuite}.
+
 \section{Erzeugen von Orakeln mit Mutation-Testing}
+
+Dieser Abschnitt stützt sich vor allem auf \cite{TSE12_Mutation}.
+
+Mutation bedeutet hier etwas anderes, als bei genetischen Algorithmen.
 
 \section{Search-Based Software Testing Competition}
 
