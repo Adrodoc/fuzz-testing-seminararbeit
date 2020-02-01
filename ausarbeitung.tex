@@ -1,0 +1,72 @@
+\documentclass[a4paper,11pt]{article}
+
+% Macht evtl unter Windows Probleme?
+\usepackage[utf8]{inputenc}
+
+% weitere Pakete hier
+
+% Referenzen schön formatieren, Kommandos
+% \cite  -> [x]
+% \citet -> Name [x]
+\usepackage[sort&compress,numbers]{natbib}
+\setlength{\bibsep}{2pt plus 0.3ex}
+\renewcommand*{\bibfont}{\small}
+\makeatletter
+\def\NAT@spacechar{~}% NEW
+\makeatother
+
+% Klickbare Links im Dokument
+\usepackage{hyperref} % muss als vorletztes Paket eingebunden werden
+% Evtl auskommentieren
+
+% Querverweise mit \cref und \Cref
+\usepackage[ngerman]{babel}
+\usepackage[ngerman,noabbrev]{cleveref} % muss als letztes Paket eingebunden werden
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\author{Adrian Uffmann\\Matrikelnummer: 12043921\\\texttt{adrian.uffmann@campus.lmu.de}}
+\title{\textbf{EvoSuite}\\Automatic Test Suite Generation for Java}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\maketitle
+
+\begin{center}
+Masterseminar Fuzz Testing
+\end{center}
+
+\begin{abstract}
+In dieser Seminararbeit wird X besprochen.
+X löst Problem Y. Die Hauptidee bei Y ist Z.
+X ist ziemlich cool.
+\end{abstract}
+
+\section{Einleitung}
+\label{sec:intro}
+
+Originalpapiere siehe z.B.: \cite{TSE12_EvoSuite,10.1109/32.57624,emse14_mutation},
+Zitieren mit Autorennamen, z.B.: \citet{TSE12_EvoSuite}.
+Grundlagen in \cref{sec:background} und Code Beispiel in \cref{fig:abs}.
+
+Infos zu \LaTeX: \url{https://en.wikibooks.org/wiki/LaTeX}
+
+\section{Grundlagen}
+\label{sec:background}
+
+\begin{figure}
+\centering
+\begin{verbatim}
+int abs(int x) {
+    if(x >= 0) return x;
+    else return -x;
+}
+\end{verbatim}
+\caption{Betragsfunktion in C/Java}
+\label{fig:abs}
+\end{figure}
+
+\bibliography{references}
+\bibliographystyle{plainnat}
+
+\end{document}
