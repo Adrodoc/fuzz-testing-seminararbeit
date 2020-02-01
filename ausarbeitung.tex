@@ -25,8 +25,12 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\author{Adrian Uffmann\\Matrikelnummer: 12043921\\\texttt{adrian.uffmann@campus.lmu.de}}
-\title{\textbf{EvoSuite}\\Automatic Test Suite Generation for Java}
+\title{\textbf{EvoSuite}\\
+Automatic Test Suite Generation for Java}
+\author{Adrian Uffmann\\
+Matrikelnummer: 12043921\\
+\texttt{adrian.uffmann@campus.lmu.de}}
+\date{09.02.2020}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
@@ -37,36 +41,64 @@ Masterseminar Fuzz Testing
 \end{center}
 
 \begin{abstract}
-In dieser Seminararbeit wird X besprochen.
-X löst Problem Y. Die Hauptidee bei Y ist Z.
-X ist ziemlich cool.
+EvoSuite ist ein Programm, welches mithilfe eines genetischen Algorithmus automatisiert JUnit-Testfälle aus Java-Bytecode generieren kann.
+Auf der Internetseite des Projektes (\url{http://www.evosuite.org/publications/}) werden 54 Publikationen zu EvoSuite und dessen Vorgänger ${\mu}Test$ aufgelistet.
+Diese Seminararbeit gibt einen Überblick über die Funktionsweise von EvoSuite.
 \end{abstract}
 
 \section{Einleitung}
-\label{sec:intro}
 
-Originalpapiere siehe z.B.: \cite{TSE12_EvoSuite,10.1109/32.57624,emse14_mutation},
-Zitieren mit Autorennamen, z.B.: \citet{TSE12_EvoSuite}.
-Grundlagen in \cref{sec:background} und Code Beispiel in \cref{fig:abs}.
+Das Testen von Software ist ein wichtiger Teil der Softwareentwicklung, so schreiben \citet{myers2004art}:
+\begin{quote}
+it [is] a well-known rule of thumb that in a typical programming project approximately 50 percent of the elapsed time and more than 50 percent of the total cost [are] expended in testing the program or system being developed.
+\end{quote}
+Daher ist es kaum verwunderlich, dass es zahlreiche Werkzeuge gibt, die helfen sollen das Testen von Software zu automatisieren.
+EvoSuite geht noch einen Schritt weiter: hier wird nicht versucht das Testen der Software zu automatisieren, sondern das Erstellen von automatisierten Tests selbst durch Automatisierung zu vereinfachen.
+Der Fokus liegt dabei auf der Optimierung eines \textit{test last} Ansatzes, d. h. getestet wird erst, nachdem das eigentliche Programm fertig implementiert ist.
+Bei diesem Ansatz würde sich ein Softwaretester zunächst Szenarien überlegen, mit denen er möglichst viele Pfade des Programms abdeckt und diese als Unittests ausformulieren.
+Mithilfe von sogenannten Orakeln wird dabei ein bestimmtes Verhalten des Programms definiert.
+Verhält sich das Programm anders als von den Orakeln vorgegeben, so schlägt der Test fehl und es wurde ein Bug gefunden.
 
-Infos zu \LaTeX: \url{https://en.wikibooks.org/wiki/LaTeX}
+EvoSuite versucht nun diesen Prozess zu vereinfachen, indem es Unittests generiert, die das Verhalten des Programms möglichst gut beschreiben.
+Ein Softwaretester muss sich dann nicht mehr selbst Szenarien überlegen, sondern nur noch die generierten Testfälle auf unerwartetes Verhalten prüfen.
+Dazu nutzt EvoSuite einen genetischen Algorithmus mit dem zufällige Testfälle immer weiter verbessert werden, bis sie eine möglichst hohe Testabdeckung erreichen.
+Die Testfälle werden dann minimiert um die Arbeit des Softwaretesters zu vereinfachen und es werden mit sogenanntem \textit{Mutation-Testing} möglichst repräsentative Orakel ausgewählt.
 
-\section{Grundlagen}
-\label{sec:background}
+EvoSuite wurde seit 2010 immer weiter entwickelt und es sind verschiedene Algorithmen für das generieren von Testfällen implementiert, die über die Kommandozeile ein- und ausgeschaltet werden können.
+Dazu haben die Autoren von EvoSuite auf der Internetseite (\url{http://www.evosuite.org/publications/}) 54 Artikel über die Konzepte in und die Evaluation von EvoSuite und dessen Vorgänger ${\mu}Test$ veröffentlicht.
+Um den vorgegebenen Umfang einzuhalten, kann diese Seminararbeit nur Überblick über einen kleinen Teil von EvoSuite geben.
 
-\begin{figure}
-\centering
-\begin{verbatim}
-int abs(int x) {
-    if(x >= 0) return x;
-    else return -x;
-}
-\end{verbatim}
-\caption{Betragsfunktion in C/Java}
-\label{fig:abs}
-\end{figure}
+\section{Genetische Algorithmen}
+
+\section{Erzeugen von Testfällen durch Optimierung der Testabdeckung}
+
+\section{Erzeugen von Orakeln mit Mutation-Testing}
+
+\section{Search-Based Software Testing Competition}
+
+\section{Praxistauglichkeit}
+
+\section{Fazit}
 
 \bibliography{references}
 \bibliographystyle{plainnat}
 
 \end{document}
+
+%Originalpapiere siehe z.B.: \cite{TSE12_EvoSuite,10.1109/32.57624,emse14_mutation},
+%Zitieren mit Autorennamen, z.B.: \citet{TSE12_EvoSuite}.
+%Grundlagen in \cref{sec:background} und Code Beispiel in \cref{fig:abs}.
+%
+%Infos zu \LaTeX: \url{https://en.wikibooks.org/wiki/LaTeX}
+%
+%\begin{figure}
+%\centering
+%\begin{verbatim}
+%int abs(int x) {
+%    if(x >= 0) return x;
+%    else return -x;
+%}
+%\end{verbatim}
+%\caption{Betragsfunktion in C/Java}
+%\label{fig:abs}
+%\end{figure}
