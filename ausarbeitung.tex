@@ -69,6 +69,7 @@ Dazu haben die Autoren von EvoSuite auf der Internetseite (\url{http://www.evosu
 Um den vorgegebenen Umfang einzuhalten, kann diese Seminararbeit nur Überblick über einen kleinen Teil von EvoSuite geben.
 
 \section{Genetische Algorithmen}
+\label{sec:gen_alg}
 
 Genetische Algorithmen gehören zu den Evolutionären Algorithmen.
 Die Idee dabei ist es, den Prozess der Evolution und natürlichen Auslese aus der Biologie zu simulieren, um Optimierungsprobleme zu lösen.
@@ -81,12 +82,34 @@ Die restlichen Individuen werden verworfen.
 Dieser iterative Prozess wird so lange ausgeführt, bis ein Individuum gefunden wurde, welches das Optimierungsproblem optimal löst, bis eine vorgegebene Anzahl an Generationen entwickelt wurde, oder bis die verfügbare Zeit aufgebraucht ist.
 In jedem Fall ist das Ergebnis des genetischen Algorithmus das beste Individuum.
 
-Um ein konkretes Optimierungsproblem mit einem genetischen Algorithmus zu lösen, muss genau definiert werden, was ein Individuum ist, aus welchen Individuen die Anfangspopulation besteht, wie die \textit{crossover}- und Mutationsoperatoren neue Individuen erzeugen und wie die Fitnessfunktion aussieht.
+Um ein konkretes Optimierungsproblem mit einem genetischen Algorithmus zu lösen, muss genau definiert werden: was ein Individuum ist, aus welchen Individuen die Anfangspopulation besteht, wie die \textit{crossover}- und Mutationsoperatoren neue Individuen erzeugen und wie die Fitnessfunktion aussieht.
 Dies ist von Problem zu Problem unterschiedlich.
 
-\section{Erzeugen von Testfällen durch Optimierung der Testabdeckung}
+\section{Erzeugen von Testfällen}
 
-Dieser Abschnitt stützt sich vor allem auf \cite{TSE12_EvoSuite}.
+\subsection{Betrachten von ganzen Testsuites auf einmal}
+
+EvoSuite beginnt mit dem Generieren von Testfällen ohne Orakel.
+Dafür werden verschiedene Algorithmen angeboten, in dieser Seminararbeit wird jedoch nur das Verbessern von ganzen Testsuites hinsichtlich der Testabdeckung mit einem genetischen Algorithmus nach \cite{TSE12_EvoSuite} beschrieben.
+
+Die Verbesserung von ganzen Testsuites auf einmal ist dabei eine wichtige Neuerung, die vor EvoSuite, nach bestem Wissen der Autoren, nicht verwendet wurde.
+Nach \cite{?} betrachteten ältere Werkzeuge nur einzelne Programmpfade auf einmal und versuchten einzelne Testfälle zu generieren, die die ausgewählten Pfade abdeckten.
+Ein großes Problem bei diesem Ansatz ist jedoch, dass nicht jeder Programmpfad auch erreichbar ist.
+Wenn versucht wird einen unerreichbaren Pfad zu erreichen, dann ist der dafür verwendete Aufwand verschwendet.
+Ob ein bestimmter Pfad überhaupt erreichbar ist, ist allerdings ein unentscheidbares Problem, da man sonst das Halteproblem lösen könnte.
+Bei diesem Ansatz ist es demnach sehr wichtig, mit welchen Programmpfaden begonnen wird.
+
+Ein weiteres Problem ist Kollateralabdeckung.
+Wenn zunächst Testfälle generiert werden, die einfache Pfade nahe der Oberfläche des Programms abdecken, kann es passieren, dass dieselben Pfade auch erreicht werden, wenn später Testfälle für tiefere Pfade des Programms generiert werden.
+Dadurch werden die zuerst generierten Testfälle nutzlos, da sie keinen Beitrag mehr zur Testabdeckung beitragen und der Aufwand sie zu generieren war verschwendet.
+
+EvoSuite vermeidet diese Probleme, indem die Testabdeckung der gesamten Testsuite auf einmal verbessert wird.
+Statt einzelne Programmpfade auszuwählen, die erreicht werden sollen, wird bei EvoSuite gemessen, wie weit die gesamte Testsuite davon entfernt ist, alle Programmpfade abzudecken.
+
+\subsection{Genetischer Algorithmus für das Generieren von Testsuites}
+
+Wie in \cref{sec:gen_alg} erwähnt, muss für die Nutzung eines genetischen Algorithmus zunächst definiert werden, wie ein Individuum aussieht.
+Da EvoSuite ganze
 
 \section{Erzeugen von Orakeln mit Mutation-Testing}
 
