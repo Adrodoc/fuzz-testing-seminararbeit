@@ -4,6 +4,19 @@
 \usepackage[utf8]{inputenc}
 
 % weitere Pakete hier
+\usepackage{xcolor}
+
+\definecolor{comment_color}{RGB}{63,127,89}
+\definecolor{keyword_color}{RGB}{127,0,85}
+\definecolor{string_color}{RGB}{42,0,255}
+\usepackage{listings}
+\lstset{language=Java,
+  basicstyle=\ttfamily,
+  commentstyle=\color{comment_color},
+  keywordstyle=\color{keyword_color},
+  showstringspaces=false,
+  stringstyle=\color{string_color},
+}
 
 % Referenzen schön formatieren, Kommandos
 % \cite  -> [x]
@@ -75,14 +88,15 @@ Genetische Algorithmen gehören zu den Evolutionären Algorithmen.
 Die Idee dabei ist es, den Prozess der Evolution und natürlichen Auslese aus der Biologie zu simulieren, um Optimierungsprobleme zu lösen.
 Dazu werden Lösungskandidaten für das Optimierungsproblem als Individuen betrachtet.
 Die Menge der betrachteten Individuen nennt man auch Population oder Generation.
-Ausgehend von einer Anfangspopulation werden zufällig mit \textit{crossover} und Mutation neue Individuen erzeugt und anhand einer Fitnessfunktion bewertet.
-Anhand von der Bewertung wird eine Menge der Individuen ausgewählt um die neue Population zu bilden.
+Ausgehend von einer Anfangspopulation werden zufällig durch Rekombination und Mutation neue Individuen erzeugt.
+Bei einer Rekombination werden aus mehreren Eltern-Individuen ein oder mehrere neue Kind-Individuen erzeugt, während bei einer Mutation aus nur einem Individuum durch eine kleine Änderung ein neues Individuum entsteht.
+Die neuen Individuen werden anhand einer Fitnessfunktion bewertet und anhand von dieser Bewertung wird eine Menge der Individuen ausgewählt, um die neue Population zu bilden.
 Die restlichen Individuen werden verworfen.
 
 Dieser iterative Prozess wird so lange ausgeführt, bis ein Individuum gefunden wurde, welches das Optimierungsproblem optimal löst, bis eine vorgegebene Anzahl an Generationen entwickelt wurde, oder bis die verfügbare Zeit aufgebraucht ist.
 In jedem Fall ist das Ergebnis des genetischen Algorithmus das beste Individuum.
 
-Um ein konkretes Optimierungsproblem mit einem genetischen Algorithmus zu lösen, muss genau definiert werden: was ein Individuum ist, aus welchen Individuen die Anfangspopulation besteht, wie die \textit{crossover}- und Mutationsoperatoren neue Individuen erzeugen und wie die Fitnessfunktion aussieht.
+Um ein konkretes Optimierungsproblem mit einem genetischen Algorithmus zu lösen, muss genau definiert werden: was ein Individuum ist, aus welchen Individuen die Anfangspopulation besteht, wie die Rekombinations- und Mutationsoperatoren neue Individuen erzeugen und wie die Fitnessfunktion aussieht.
 Dies ist von Problem zu Problem unterschiedlich.
 
 \section{Erzeugen von Testfällen}
@@ -109,7 +123,21 @@ Statt einzelne Programmpfade auszuwählen, die erreicht werden sollen, wird bei 
 \subsection{Genetischer Algorithmus für das Generieren von Testsuites}
 
 Wie in \cref{sec:gen_alg} erwähnt, muss für die Nutzung eines genetischen Algorithmus zunächst definiert werden, wie ein Individuum aussieht.
-Da EvoSuite ganze
+Da EvoSuite ganze Testsuites auf einmal betrachtet, ist ein Individuum eine Testsuite.
+Eine Testsuite ist dabei eine Menge von Testfällen ($T = \{t_1, t_2, ..., t_n\}$), wobei ein Testfall eine Sequenz von Anweisungen ist ($t = \langle s_1, s_2, ..., s_l \rangle$).
+In EvoSuite wird zwischen 5 Arten von Anweisungen unterschieden:
+\begin{itemize}
+	\item Primitive Anweisungen, wie \lstinline{int var0 = 54},\\
+	oder \lstinline{Object[] var1 = new Object[10]}.
+	\item Zuweisungen, wie \lstinline{var1[0] = new Object()},\\
+	oder \lstinline{var2.maxSize = 10}.
+	\item Feld-Anweisungen, wie \lstinline{int var3 = var2.size}.
+	\item Konstruktor-Anweisungen, wie \lstinline{Stack var2 = new Stack()}.
+	\item Methoden-Anweisungen, wie \lstinline{int var4 = var2.pop()}.
+\end{itemize}
+Der Sprachumfang von Java erlaubt zwar deutlich mehr Arten von Anweisungen, wie z. B. \lstinline{if}-Anweisungen, \lstinline{while}- und \lstinline{for}-Schleifen, diese sind jedoch nicht in Testfällen erwünscht, da Testfälle deterministisch sein sollen und keine Parameter erhalten, die sich auf den Kontrollfluss auswirken könnten.
+
+Für den noch zu definierenden Mutationsoperator ist es wichtig festzuhalten, dass jede Anweisung einen Wert von einem bestimmten Typ bereitstellt, der in späteren Anweisungen verwendet werden kann.
 
 \section{Erzeugen von Orakeln mit Mutation-Testing}
 
