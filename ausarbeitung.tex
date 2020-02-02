@@ -88,7 +88,7 @@ Genetische Algorithmen gehören zu den Evolutionären Algorithmen.
 Die Idee dabei ist es, den Prozess der Evolution und natürlichen Auslese aus der Biologie zu simulieren, um Optimierungsprobleme zu lösen.
 Dazu werden Lösungskandidaten für das Optimierungsproblem als Individuen betrachtet.
 Die Menge der betrachteten Individuen nennt man auch Population oder Generation.
-Ausgehend von einer Anfangspopulation werden zufällig durch Rekombination und Mutation neue Individuen erzeugt.
+Ausgehend von einer Anfangspopulation werden mit einer bestimmten Wahrscheinlichkeit durch Rekombination und/oder Mutation neue Individuen erzeugt.
 Bei einer Rekombination werden aus mehreren Eltern-Individuen ein oder mehrere neue Kind-Individuen erzeugt, während bei einer Mutation aus nur einem Individuum durch eine kleine Änderung ein neues Individuum entsteht.
 Die neuen Individuen werden anhand einer Fitnessfunktion bewertet und anhand von dieser Bewertung wird eine Menge der Individuen ausgewählt, um die neue Population zu bilden.
 Die restlichen Individuen werden verworfen.
@@ -138,6 +138,61 @@ In EvoSuite wird zwischen 5 Arten von Anweisungen unterschieden:
 Der Sprachumfang von Java erlaubt zwar deutlich mehr Arten von Anweisungen, wie z. B. \lstinline{if}-Anweisungen, \lstinline{while}- und \lstinline{for}-Schleifen, diese sind jedoch nicht in Testfällen erwünscht, da Testfälle deterministisch sein sollen und keine Parameter erhalten, die sich auf den Kontrollfluss auswirken könnten.
 
 Für den noch zu definierenden Mutationsoperator ist es wichtig festzuhalten, dass jede Anweisung einen Wert von einem bestimmten Typ bereitstellt, der in späteren Anweisungen verwendet werden kann.
+Für eine Anweisung $s$ wird dieser Wert im folgenden als $v(s)$ bezeichnet.
+
+Als nächstes müssen die Rekombination und Mutation definiert werden.
+Die Rekombination ist in EvoSuite sehr einfach gehalten.
+Hierbei werden mit einer bestimmten Wahrscheinlichkeit aus den beiden Eltern-Testsuites $P_1$ und $P_2$ die beiden Kind-Testsuites $O_1$ und $O_2$ erstellt.
+Zunächst wird ein Anteil $\alpha \in [0;1]$ gewählt.
+Das Kind $O_1$ ergibt sich, indem der Anteil $\alpha$ der Testfälle von $P_1$ mit einem Anteil $1 - \alpha$ der Testfälle von $P_2$ kombiniert wird.
+Das Kind $O_2$ besteht dann aus den übrigen $(1 - \alpha) \times |P_1|$ Testfällen von $P_1$ und den übrigen $\alpha \times |P_2|$ Testfällen von $P_2$.
+Individuen können durch diese Rekombination nicht länger oder kürzer werden, als der längste, bzw. kürzeste Elternteil.
+Im Durchschnitt nähern sich dadurch alle Individuen der gleichen Anzahl an Testfällen an.
+
+Die Mutation einer Testsuite $T$ ist deutlich komplexer, als die Rekombination.
+Hierbei wird jeder Testfall $t$ mit einer Wahrscheinlichkeit von $\frac{1}{|T|}$ mutiert.
+Im Durchschnitt wird bei der Mutation einer Testsuite also genau ein Testfall mutiert.
+Es ist aber auch möglich, dass keiner oder mehrere Testfälle auf einmal mutiert werden. Bei der Mutation eines Testfalls werden der Reihe nach folgende Operationen jeweils mit einer Wahrscheinlichkeit von $\frac{1}{3}$ durchgefüht:
+\begin{enumerate}
+	\item Entfernen von Anweisungen.
+	\item Ändern von Anweisungen.
+	\item Einfügen von Anweisungen.
+\end{enumerate}
+
+Beim Entfernen von Anweisungen wird jede Anweisung $s_i$ mit einer Wahrscheinlichkeit von $\frac{1}{|t|}$ entfernt.
+Da der Wert $v(s_i)$ in einer späteren Anweisung benutzt werden könnte, müssen alle Anweisungen $\{s_j \in t | j > i\}$ überprüft werden, um sicherzustellen, dass ein valides Individuum entsteht.
+Wenn ein $s_j$ den Wert $v(s_i)$ verwendet, dann wird dieser durch einen anderen verfügbaren Wert desselben Typs ersetzt.
+Wenn in dem Testfall keine andere Anweisung einen Wert mit demselben Typ bereitstellt, dann wird $s_j$ rekursiv entfernt.
+Bleibt nach dem Entfernen von Anweisungen ein leerer Testfall übrig, dann wird dieser komplett gelöscht.
+
+Beim Ändern von Anweisungen, wird wieder jede Anweisung mit einer Wahrscheinlichkeit von $\frac{1}{|t|}$ geändert.
+Hier werden verschiedene Arten von Anweisungen verschieden behandelt.
+
+Bei Primitiven Anweisungen wird einfach der primitive Wert um einen zufälligen $\Delta$-Wert erhöht oder erniedrigt, Arrays werden verlängert oder verkürzt und Zeichenketten werden mutiert.
+Bei der Verkürzung von Arrays muss genau wie beim Entfernen von Anweisungen darauf geachtet werden, dass spätere Anweisungen keine entfallenen Arrayindizies verwenden.
+Bei der Mutation von Zeichenketten werden, ähnlich wie bei der Mutation von Testfällen, neue Zeichen eingefügt, bestehende Zeichen geändert, und/oder alte Zeichen entfernt.
+
+Bei Zuweisungen wird zufällig eine der beiden Seiten durch ein anderes Feld, bzw. einen anderen Wert ersetzt.
+
+Für Feld-, Konstruktor- und Methoden-Anweisungen wird zufällig ein anderes Feld, ein anderer Konstruktor, oder eine andere Methode ausgesucht, deren Parameter mit den verfügbaren Werten erfüllt werden können.
+Dabei ist es z. B. auch möglich, dass aus einer Feld-Anweisung eine Methoden-Anweisung wird.
+
+Beim Einfügen von Anweisungen wird dem Testfall mit einer Wahrscheinlichkeit von $\sigma$ eine zufällige Anweisung hinzugefügt.
+Als Parameter für Methoden- oder Konstruktoraufrufe werden dabei die bereitgestellten Werte wiederverwendet oder neue Werte generiert, die direkt eingesetzt werden.
+Dies wird wiederholt, bis in einem Schritt mit einer Wahrscheinlichkeit von $1 - \sigma$ keine neue Anweisung eingefügt wird.
+Durch dieses Vorgehen sinkt die Wahrscheinlichkeit weitere Anweisungen einzufügen exponentiell.
+$i$ oder mehr Anweisungen werden also nur mit einer Wahrscheinlichkeit von $\sigma^i$ eingefügt.
+
+Mit dem bis hier beschriebenen Mutationsoperator können Testfälle länger und kürzer werden und sogar entfallen.
+Es ist aber bisher nicht möglich, dass neue Testfälle entstehen und auch durch die Rekombination kann die Anzahl der Testfälle in einer Testsuite nicht größer werden, als die Anzahl der Testfälle im größeren Elternteil.
+Aus diesem Grund wird bei der Mutation einer Testsuite nach dem Mutieren der Testfälle mit einer Wahrscheinlichkeit von $\sigma'$ ein zufälliger neuer Testfall erzeugt.
+Genau wie bei dem Einfügen von Anweisungen werden hier mit exponentiell sinkender Wahrscheinlichkeit weitere Testfälle hinzugefügt.
+
+Um einen Testfall zu Erzeugen, wird eine zufällig Länge $l ~ [1, L]$ gewählt (wobei $L$ die maximale Länge von Testfällen ist) und es werden so lange neue Anweisungen, wie bei der Mutation von Testfällen, eingefügt, bis der neue Testfall die gewünschte Länge erreicht hat.
+
+Nun da die Mutation von Testsuites definiert ist, ist es leicht die Anfangspopulation zu definieren.
+Als Anfangspopulation wird eine vorgegebene Anzahl an Testsuites erzeugt, indem jede mit einer vorgegeben Anzahl an zufälligen Testfällen befüllt wird.
+Die zufälligen Testfälle werden dabei genau wie bei der Mutation von Testsuites erstellt.
 
 \section{Erzeugen von Orakeln mit Mutation-Testing}
 
