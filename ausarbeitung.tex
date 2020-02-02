@@ -188,7 +188,7 @@ Es ist aber bisher nicht möglich, dass neue Testfälle entstehen und auch durch
 Aus diesem Grund wird bei der Mutation einer Testsuite nach dem Mutieren der Testfälle mit einer Wahrscheinlichkeit von $\sigma'$ ein zufälliger neuer Testfall erzeugt.
 Genau wie bei dem Einfügen von Anweisungen werden hier mit exponentiell sinkender Wahrscheinlichkeit weitere Testfälle hinzugefügt.
 
-Um einen Testfall zu Erzeugen, wird eine zufällig Länge $l ~ [1, L]$ gewählt (wobei $L$ die maximale Länge von Testfällen ist) und es werden so lange neue Anweisungen, wie bei der Mutation von Testfällen, eingefügt, bis der neue Testfall die gewünschte Länge erreicht hat.
+Um einen Testfall zu Erzeugen, wird eine zufällig Länge $l \sim [1, L]$ gewählt (wobei $L$ die maximale Länge von Testfällen ist) und es werden so lange neue Anweisungen, wie bei der Mutation von Testfällen, eingefügt, bis der neue Testfall die gewünschte Länge erreicht hat.
 
 Nun da die Mutation von Testsuites definiert ist, ist es leicht die Anfangspopulation zu definieren.
 Als Anfangspopulation wird eine vorgegebene Anzahl an Testsuites erzeugt, indem jede mit einer vorgegeben Anzahl an zufälligen Testfällen befüllt wird.
