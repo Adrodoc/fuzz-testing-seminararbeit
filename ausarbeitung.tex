@@ -107,7 +107,7 @@ EvoSuite beginnt mit dem Generieren von Testfällen ohne Orakel.
 Dafür werden verschiedene Algorithmen angeboten, in dieser Seminararbeit wird jedoch nur das Verbessern von ganzen Testsuites hinsichtlich der Testabdeckung mit einem genetischen Algorithmus nach \cite{TSE12_EvoSuite} beschrieben.
 
 Die Verbesserung von ganzen Testsuites auf einmal ist dabei eine wichtige Neuerung, die vor EvoSuite, nach bestem Wissen der Autoren, nicht verwendet wurde.
-Nach \cite{?} betrachteten ältere Werkzeuge nur einzelne Programmpfade auf einmal und versuchten einzelne Testfälle zu generieren, die die ausgewählten Pfade abdeckten.
+Nach \cite{TSE12_EvoSuite} betrachteten die meisten anderen Werkzeuge nur einzelne Programmpfade auf einmal und versuchten einzelne Testfälle zu generieren, die die ausgewählten Pfade abdeckten.
 Ein großes Problem bei diesem Ansatz ist jedoch, dass nicht jeder Programmpfad auch erreichbar ist.
 Wenn versucht wird einen unerreichbaren Pfad zu erreichen, dann ist der dafür verwendete Aufwand verschwendet.
 Ob ein bestimmter Pfad überhaupt erreichbar ist, ist allerdings ein unentscheidbares Problem, da man sonst das Halteproblem lösen könnte.
@@ -202,7 +202,26 @@ Mutation bedeutet hier etwas anderes, als bei genetischen Algorithmen.
 
 \section{Search-Based Software Testing Competition}
 
+EvoSuite hat bisher bei allen Seach-Based Software Testing (SBST) Competitions teilgenommen.
+Dieser Wettbewerb wird seit 2013 jedes Jahr vom International Workshop on Search-Based Software Testing veranstaltet.
+EvoSuite konnte sich dabei gegenüber den anderen Werkzeugen durchsetzen und erzielte in den Jahren 2013 und 2016 - 2019 jeweils den ersten Platz \cite{6571663, 7810701, 7967958, 8452806, 8812209}.
+Im Jahr 2015 belegte EvoSuite den zweiten Platz \cite{7173585}.
+Die Ergebnisse des Wettbewerbs im Jahr 2014 konnte ich leider nicht finden.
+
 \section{Praxistauglichkeit}
+
+\section{Evaluation}
+
+EvoSuite ist wird öffentlich auf GitHub gehostet, wodurch der Quellcode einfach mit Git heruntergeladen werden konnte.
+Mit einer Maven 3.6.2 Installation (\url{https://maven.apache.org/}) konnten ich leicht eigene Versionen von EvoSuite basierend auf dem \textit{master-Branch} und \textit{1.0.6-Tag} bauen.
+Leider schlugen einige Tests im \textit{evosuite-client}-Projekt fehl, daher musste ich Maven mit \texttt{mvn install -DskipTests} aufrufen.
+
+Da EvoSuite Testfälle generiert, die von einem Tester evaluiert werden müssen, um Fehler zu finden, wäre es für diese Seminararbeit zu aufwändig EvoSuite an einer echten Bibliothek zu evaluieren.
+Stattdessen habe ich ein paar sehr einfache Klassen geschrieben und aus diesen mit EvoSuite Tests generiert.
+
+EvoSuite kann per Kommandozeile aufgerufen werden und unterstützt eine große Anzahl and Parametern.
+Da die kleinen Beispiele, die ich verwendete, keine externen Bibliotheken benutzen, war benötigte ich für diese Beispiele nur den \texttt{-target} Parameter.
+Ein Aufruf von EvoSuite sieht damit wie folgt aus: \texttt{java -jar evosuite-master-1.0.6.jar -target classesDir}
 
 \section{Fazit}
 
