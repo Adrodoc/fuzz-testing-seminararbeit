@@ -4,6 +4,8 @@
 \usepackage[utf8]{inputenc}
 
 % weitere Pakete hier
+\usepackage{amsmath}
+\usepackage{multicol}
 \usepackage{xcolor}
 
 \definecolor{comment_color}{RGB}{63,127,89}
@@ -82,12 +84,13 @@ Dazu haben die Autoren von EvoSuite auf der Internetseite (\url{http://www.evosu
 Um den vorgegebenen Umfang einzuhalten, kann diese Seminararbeit nur Überblick über einen kleinen Teil von EvoSuite geben.
 
 \section{Genetische Algorithmen}
-\label{sec:gen_alg}
+\label{sec:genetische_algorithmen}
 
 Genetische Algorithmen gehören zu den Evolutionären Algorithmen.
 Die Idee dabei ist es, den Prozess der Evolution und natürlichen Auslese aus der Biologie zu simulieren, um Optimierungsprobleme zu lösen.
 Dazu werden Lösungskandidaten für das Optimierungsproblem als Individuen betrachtet.
 Die Menge der betrachteten Individuen nennt man auch Population oder Generation.
+
 Ausgehend von einer Anfangspopulation werden mit einer bestimmten Wahrscheinlichkeit durch Rekombination und/oder Mutation neue Individuen erzeugt.
 Bei einer Rekombination werden aus mehreren Eltern-Individuen ein oder mehrere neue Kind-Individuen erzeugt, während bei einer Mutation aus nur einem Individuum durch eine kleine Änderung ein neues Individuum entsteht.
 Die neuen Individuen werden anhand einer Fitnessfunktion bewertet und anhand von dieser Bewertung wird eine Menge der Individuen ausgewählt, um die neue Population zu bilden.
@@ -120,9 +123,9 @@ Dadurch werden die zuerst generierten Testfälle nutzlos, da sie keinen Beitrag 
 EvoSuite vermeidet diese Probleme, indem die Testabdeckung der gesamten Testsuite auf einmal verbessert wird.
 Statt einzelne Programmpfade auszuwählen, die erreicht werden sollen, wird bei EvoSuite gemessen, wie weit die gesamte Testsuite davon entfernt ist, alle Programmpfade abzudecken.
 
-\subsection{Genetischer Algorithmus für das Generieren von Testsuites}
+\subsection{Testsuites als Individuen}
 
-Wie in \cref{sec:gen_alg} erwähnt, muss für die Nutzung eines genetischen Algorithmus zunächst definiert werden, wie ein Individuum aussieht.
+Wie in \cref{sec:genetische_algorithmen} erwähnt, muss für die Nutzung eines genetischen Algorithmus zunächst definiert werden, wie ein Individuum aussieht.
 Da EvoSuite ganze Testsuites auf einmal betrachtet, ist ein Individuum eine Testsuite.
 Eine Testsuite ist dabei eine Menge von Testfällen ($T = \{t_1, t_2, ..., t_n\}$), wobei ein Testfall eine Sequenz von Anweisungen ist ($t = \langle s_1, s_2, ..., s_l \rangle$).
 In EvoSuite wird zwischen 5 Arten von Anweisungen unterschieden:
@@ -136,9 +139,13 @@ In EvoSuite wird zwischen 5 Arten von Anweisungen unterschieden:
 	\item Methoden-Anweisungen, wie \lstinline{int var4 = var2.pop()}.
 \end{itemize}
 Der Sprachumfang von Java erlaubt zwar deutlich mehr Arten von Anweisungen, wie z. B. \lstinline{if}-Anweisungen, \lstinline{while}- und \lstinline{for}-Schleifen, diese sind jedoch nicht in Testfällen erwünscht, da Testfälle deterministisch sein sollen und keine Parameter erhalten, die sich auf den Kontrollfluss auswirken könnten.
+Außerdem enthalten die hier definierten Testfälle keine Orakel, wie z. B. \textit{Assertions}.
+Diese werden in einem späteren Schritt hinzugefügt (Siehe \cref{sec:erzeugen_von_orakeln}).
 
 Für den noch zu definierenden Mutationsoperator ist es wichtig festzuhalten, dass jede Anweisung einen Wert von einem bestimmten Typ bereitstellt, der in späteren Anweisungen verwendet werden kann.
 Für eine Anweisung $s$ wird dieser Wert im folgenden als $v(s)$ bezeichnet.
+
+\subsection{Erzeugen neuer Individuen}
 
 Als nächstes müssen die Rekombination und Mutation definiert werden.
 Die Rekombination ist in EvoSuite sehr einfach gehalten.
@@ -188,13 +195,83 @@ Es ist aber bisher nicht möglich, dass neue Testfälle entstehen und auch durch
 Aus diesem Grund wird bei der Mutation einer Testsuite nach dem Mutieren der Testfälle mit einer Wahrscheinlichkeit von $\sigma'$ ein zufälliger neuer Testfall erzeugt.
 Genau wie bei dem Einfügen von Anweisungen werden hier mit exponentiell sinkender Wahrscheinlichkeit weitere Testfälle hinzugefügt.
 
-Um einen Testfall zu Erzeugen, wird eine zufällig Länge $l \sim [1, L]$ gewählt (wobei $L$ die maximale Länge von Testfällen ist) und es werden so lange neue Anweisungen, wie bei der Mutation von Testfällen, eingefügt, bis der neue Testfall die gewünschte Länge erreicht hat.
+Um einen Testfall zu Erzeugen, wird eine zufällig Länge $l \sim [1, L]$ gewählt (wobei $L$ die maximal zugelassene Länge von Testfällen ist) und es werden so lange neue Anweisungen, wie bei der Mutation von Testfällen, eingefügt, bis der neue Testfall die gewünschte Länge erreicht hat.
 
 Nun da die Mutation von Testsuites definiert ist, ist es leicht die Anfangspopulation zu definieren.
 Als Anfangspopulation wird eine vorgegebene Anzahl an Testsuites erzeugt, indem jede mit einer vorgegeben Anzahl an zufälligen Testfällen befüllt wird.
 Die zufälligen Testfälle werden dabei genau wie bei der Mutation von Testsuites erstellt.
 
+\subsection{Fitnessfunktion}
+
+Als letztes muss für den genetischen Algorithmus noch die Fitnessfunktion definiert werden.
+Hier implementiert EvoSuite verschiedene Ansätze.
+Z. B. können Testfälle mit \textit{Mutation-Testing} generiert werden \cite{TSE12_Mutation}.
+In dieser Arbeit wird jedoch die Maximierung der Testabdeckung aus \cite{TSE12_EvoSuite} betrachtet.
+Gesucht ist dabei eine Testsuite, die mit möglichst wenig Anweisungen, möglichst viele Zweige der getesteten Klasse ausführt.
+Jede Methode hat dabei einen Programmpfad (den Körper der Methode), welcher sich an einer \lstinline{if}-Anweisung in zwei Pfade aufteilt.
+Diese Pfade können sich selbst wieder aufteilen oder wieder zu einem Pfad zusammenlaufen.
+Da EvoSuite nicht Quellcode, sondern Bytecode betrachtet, sind kompliziertere Anweiungen, wie \lstinline{switch}-Anweisungen oder Schleifen bereits in einfache Verzweigungen übersetzt worden.
+Eine optimale Testsuite führt demnach jede Anweisung in der getesteten Klasse aus, indem jedes Prädikat mindestens einmal zu \lstinline{true} und \lstinline{false} evaluiert wird.
+
+Da genetische Algorithmen durch Mutation nur kleine zufällige Änderungen erzeugen, ist es wichtig, dass bereits kleine Änderungen eine Verbesserung der Fitness erreichen können.
+Wenn sich die Fitnessfunktion nur verbessert, wenn mehr Programmpfade abgedeckt werden, ist es sehr unwahrscheinlich, dass eine kleine Änderung die Fitness verbessert, da es sehr schwer ist genau die richtigen Werte zu erraten um ein Prädikat zu erfüllen.
+Aus diesem Grund wird die \textit{branch distance} $d_{min}(b, T)$ von \citet{10.1109/32.57624} verwendet.
+
+\begin{figure}[h]
+	\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+public static int fakultaet(int n) {
+  if (n > 16) { // Zweig b
+    throw new IllegalArgumentException(n + "! is out of int range");
+  }
+  ...
+}
+	\end{lstlisting}
+	\begin{multicols}{2}
+		\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+@Test(timeout = 4000)
+public void test01() throws Throwable {
+  int int0 = fakultaet(1);
+  assertEquals(1, int0);
+}
+		\end{lstlisting}
+		\textit{branch distance} $\approx$ 16
+		\columnbreak
+		\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+@Test(timeout = 4000)
+public void test10() throws Throwable {
+  int int0 = fakultaet(10);
+  assertEquals(3628800, int0);
+}
+		\end{lstlisting}
+		\textit{branch distance} $\approx$ 7
+	\end{multicols}
+	\caption{Beispiel für \textit{branch distance}}
+	\label{fig:branch_distance}
+\end{figure}
+
+Die Idee hierbei ist, dass eine Ausführung eines Prädikats besser ist, wenn die Variablen des Prädikats weniger geändert werden müssen, um es zu erfüllen.
+\cref{fig:branch_distance} zeigt ein Beispiel, wie die \textit{branch distance} für einen Zweig \texttt{b} vom Wert einer Variable \texttt{n} abhängt.
+Wenn die Variable \texttt{n} den Wert 1 hat, muss sie noch um 16 geändert werden, um das Prädikat zu erfüllen.
+Wenn die Variable \texttt{n} den Wert 10 hat, muss sie nur noch um 7 geändert werden.
+Demnach ist der rechte Testfall näher daran Zweig \texttt{b} abzudecken.
+Tatsächlich ist die Berechnung der \textit{branch distance} etwas komplizierter, so wird z. B. bei Prädikaten, die zu \lstinline{true} evaluieren sollen noch eine Konstante $k > 0$ addiert und es müssen auch komplexe Prädikate mit mehreren Variablen berücksichtigt werden.
+Um die Fitnessfunktion von EvoSuite zu verstehen sind diese Details aber nicht wichtig.
+
+\begin{figure}[h]
+	$fitness(T) = |M| - |M_T| + \sum\limits_{b \in B} d(b, T)$
+
+	$d(b, T) = \begin{cases}
+	0 & \text{if the branch has been covered,}\\
+	v(d_{min}(b, T)) & \text{if the predicate has been executed at least twice,}\\
+	1 & \text{otherwise.}
+	\end{cases}$
+
+	$v(x) = \frac{x}{(x+1)}$
+	\caption{Fitnessfunktion \cite{TSE12_EvoSuite}}
+\end{figure}
+
 \section{Erzeugen von Orakeln mit Mutation-Testing}
+\label{sec:erzeugen_von_orakeln}
 
 Dieser Abschnitt stützt sich vor allem auf \cite{TSE12_Mutation}.
 
