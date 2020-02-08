@@ -103,6 +103,7 @@ Um ein konkretes Optimierungsproblem mit einem genetischen Algorithmus zu lösen
 Dies ist von Problem zu Problem unterschiedlich.
 
 \section{Erzeugen von Testfällen}
+\label{sec:erzeugen_von_testfaellen}
 
 \subsection{Betrachten von ganzen Testsuites auf einmal}
 
@@ -211,10 +212,10 @@ Gesucht ist dabei eine Testsuite, die mit möglichst wenig Anweisungen, möglich
 Jede Methode hat dabei einen Programmpfad (den Körper der Methode), welcher sich an einer \lstinline{if}-Anweisung in zwei Pfade aufteilt.
 Diese Pfade können sich selbst wieder aufteilen oder wieder zu einem Pfad zusammenlaufen.
 Da EvoSuite nicht Quellcode, sondern Bytecode betrachtet, sind kompliziertere Anweiungen, wie \lstinline{switch}-Anweisungen oder Schleifen bereits in einfache Verzweigungen übersetzt worden.
-Eine optimale Testsuite führt demnach jede Anweisung in der getesteten Klasse aus, indem jedes Prädikat mindestens einmal zu \lstinline{true} und \lstinline{false} evaluiert wird.
+Eine optimale Testsuite führt demnach jede Anweisung in der getesteten Klasse aus, indem jede Bedingung mindestens einmal zu wahr und falsch evaluiert wird.
 
 Da genetische Algorithmen durch Mutation nur kleine zufällige Änderungen erzeugen, ist es wichtig, dass bereits kleine Änderungen eine Verbesserung der Fitness erreichen können.
-Wenn sich die Fitnessfunktion nur verbessert, wenn mehr Programmpfade abgedeckt werden, ist es sehr unwahrscheinlich, dass eine kleine Änderung die Fitness verbessert, da es sehr schwer ist genau die richtigen Werte zu erraten um ein Prädikat zu erfüllen.
+Wenn sich die Fitnessfunktion nur verbessert, wenn mehr Programmpfade abgedeckt werden, ist es sehr unwahrscheinlich, dass eine kleine Änderung die Fitness verbessert, da es sehr schwer ist genau die richtigen Werte zu erraten um eine Bedingung zu erfüllen.
 Aus diesem Grund wird die \textit{branch distance} $d_{min}(b, T)$ von \citet{10.1109/32.57624} verwendet.
 
 \begin{figure}[h]
@@ -249,29 +250,45 @@ public void test10() throws Throwable {
 	\label{fig:branch_distance}
 \end{figure}
 
-Die Idee hierbei ist, dass eine Ausführung eines Prädikats besser ist, wenn die Variablen des Prädikats weniger geändert werden müssen, um es zu erfüllen.
+Die Idee hierbei ist, dass eine Ausführung einer Bedingung besser ist, wenn die Variablen der Bedingung weniger geändert werden müssen, um es zu erfüllen.
 \cref{fig:branch_distance} zeigt ein Beispiel, wie die \textit{branch distance} für einen Zweig \texttt{b} vom Wert einer Variable \texttt{n} abhängt.
-Wenn die Variable \texttt{n} den Wert 1 hat, muss sie noch um 16 geändert werden, um das Prädikat zu erfüllen.
+Wenn die Variable \texttt{n} den Wert 1 hat, muss sie noch um 16 geändert werden, um die Bedingung zu erfüllen.
 Wenn die Variable \texttt{n} den Wert 10 hat, muss sie nur noch um 7 geändert werden.
 Demnach ist der rechte Testfall näher daran Zweig \texttt{b} abzudecken.
-Tatsächlich ist die Berechnung der \textit{branch distance} etwas komplizierter, so wird z. B. bei Prädikaten, die zu \lstinline{true} evaluieren sollen noch eine Konstante $k > 0$ addiert und es müssen auch komplexe Prädikate mit mehreren Variablen berücksichtigt werden.
+Die \textit{branch distance} einer Testsuite ist einfach das Minimum der \textit{branch distances} der einzelnen Testfälle.
+
+Tatsächlich ist die Berechnung der \textit{branch distance} etwas komplizierter, so wird z. B. bei Bedingungen, die zu wahr evaluieren sollen noch eine Konstante $k > 0$ addiert, es müssen auch komplexe Bedingungen mit mehreren Variablen berücksichtigt werden und manche Bedingungen werden wegen Verschachtelung gar nicht ausgeführt, bevor andere Bedingungen erfolgreich sind.
 Um die Fitnessfunktion von EvoSuite zu verstehen sind diese Details aber nicht wichtig.
+
+Die Fitnessfunktion soll also alle Methoden ($M$) der getesteten Klasse ausführen und in den Methoden alle Zweige ($B$).
+Für eine Testsuite $T$ ergibt sich damit die zu minimierende Fitnessfunktion in \cref{fig:fitnessfunktion}.
+$M_T$ ist dabei die Menge der Methoden der getesteten Klasse, die durch die Testsuite abgedeckt werden und die Funktion $v(x)$ ist eine Normalisierungsfunktion um die \textit{branch distance} in einen Wertebereich von 0 bis 1 zu übersetzen.
 
 \begin{figure}[h]
 	$fitness(T) = |M| - |M_T| + \sum\limits_{b \in B} d(b, T)$
 
 	$d(b, T) = \begin{cases}
-	0 & \text{if the branch has been covered,}\\
-	v(d_{min}(b, T)) & \text{if the predicate has been executed at least twice,}\\
+	0 & \text{if the branch b has been covered,}\\
+	v(d_{min}(b, T)) & \text{if the predicate was executed at least twice,}\\
 	1 & \text{otherwise.}
 	\end{cases}$
 
 	$v(x) = \frac{x}{(x+1)}$
-	\caption{Fitnessfunktion \cite{TSE12_EvoSuite}}
+	\caption{Fitnessfunktion aus \cite{TSE12_EvoSuite}}
+	\label{fig:fitnessfunktion}
 \end{figure}
+
+Wie man sieht wird die \textit{branch distance} $d_{min}(b, T)$ von \citet{10.1109/32.57624} nur für Zweige verwendet, die mindestens zweimal ausgeführt werden.
+Der Grund dafür ist, dass es für jede Bedingung zwei Zweige gibt.
+Wenn eine Bedingung durch eine Testsuite nur einmal ausgeführt wird, ist die \textit{branch distance} nur für einen der beiden Zweige 0.
+Eine Minimierung der \textit{branch distance} für den anderen Zweig würde aber dazu führen, dass der erste Zweig nicht mehr abgedeckt wird, da die Bedingung bei nur einer Ausführung nicht wahr und falsch sein kann.
+Nun würde die Fitnessfunktion wiederum Individuen bevorzugen, die die \textit{branch distance} des ersten Zweigs minimieren und es ergibt sich ein oszillierendes Verhalten.
+Dieses Problem wird durch die Fallunterscheidung in der Funktion $d(b, T)$ vollständig vermieden.
 
 \section{Erzeugen von Orakeln mit Mutation-Testing}
 \label{sec:erzeugen_von_orakeln}
+
+Mit dem Vorgehen in \cref{sec:erzeugen_von_testfaellen} können Testsuites mit möglichst hoher Testabdeckung erzeugt werden, aber diese Testsuites enthalten noch keine Orakel.
 
 Dieser Abschnitt stützt sich vor allem auf \cite{TSE12_Mutation}.
 
