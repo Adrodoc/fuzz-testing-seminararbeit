@@ -88,7 +88,7 @@ Um den vorgegebenen Umfang einzuhalten, kann diese Seminararbeit nur Überblick 
 \section{Genetische Algorithmen}
 \label{sec:genetische_algorithmen}
 
-Genetische Algorithmen gehören zu den Evolutionären Algorithmen.
+Genetische Algorithmen gehören zu den evolutionären Algorithmen.
 Die Idee dabei ist es, den Prozess der Evolution und natürlichen Auslese aus der Biologie zu simulieren, um Optimierungsprobleme zu lösen.
 Dazu werden Lösungskandidaten für das Optimierungsproblem als Individuen betrachtet.
 Die Menge der betrachteten Individuen nennt man auch Population oder Generation.
@@ -197,7 +197,7 @@ Es werden neue Zeichen eingefügt, bestehende Zeichen geändert und alte Zeichen
 Bei Zuweisungen wird zufällig eine der beiden Seiten durch ein anderes Feld, bzw. einen anderen Wert ersetzt.
 
 Für Feld-, Konstruktor- und Methoden-Anweisungen wird zufällig ein anderes Feld, ein anderer Konstruktor oder eine andere Methode ausgesucht, deren Parameter mit den verfügbaren Werten erfüllt werden können.
-Dabei ist es z.~B. auch möglich, dass aus einer Feld-Anweisung eine Metho-den-Anweisung wird.
+Dabei ist es z.~B. auch möglich, dass aus einer Feld-Anweisung eine Methoden-Anweisung wird.
 
 Beim Einfügen von Anweisungen wird dem Testfall mit einer Wahrscheinlichkeit von $\sigma$ eine zufällige Anweisung hinzugefügt.
 Als Parameter für Methoden- oder Konstruktoraufrufe werden dabei die bereitgestellten Werte wiederverwendet oder neue Werte generiert, die direkt eingesetzt werden.
@@ -276,7 +276,7 @@ Um die Fitnessfunktion von EvoSuite zu verstehen sind diese Details aber nicht w
 
 Eine optimale Testsuite $T$ soll also die Menge aller Methoden der getesteten Klasse $M$ ausführen und in den Methoden die Menge aller Zweige $B$.
 Damit ergibt sich die zu minimierende Fitnessfunktion in \cref{fig:fitnessfunktion}.
-$M_T$ ist dabei die Menge der Methoden der getesteten Klasse, die durch die Testsuite abgedeckt werden und die Funktion $v(x)$ ist eine Normalisierungsfunktion um die \textit{branch distance} in einen Wertebereich von 0 bis 1 zu übersetzen.
+$M_T$ ist dabei die Menge der Methoden der getesteten Klasse, die durch die Testsuite abgedeckt werden und die Funktion $v(x)$ ist eine Normalisierungsfunktion, um die \textit{branch distance} in einen Wertebereich von 0 bis 1 zu übersetzen.
 
 \begin{figure}[h]
 	$fitness(T) = |M| - |M_T| + \sum\limits_{b \in B} d(b, T)$
@@ -322,6 +322,7 @@ Nach \citep{TSE12_Mutation} werden hier sieben Arten von \textit{Assertions} unt
 	\item Vergleichs-Assertions, wie \lstinline{assertFalse(var2.equals(var0))}.
 	\item Inspektor-Assertions, wie \lstinline{assertEquals(0, intStack0.size())}.
 	\item Feld-Assertions, wie \lstinline{assertEquals(1, intStack0.size)}.
+	\item String-Assertions, wie \lstinline{assertEquals("P7W", var1.toString())}.
 	\item Null-Assertions, wie \lstinline{assertNull(intStack1)}.
 	\item Exception-Assertions.
 \end{itemize}
@@ -406,7 +407,7 @@ Die von EvoSuite generierten Tests sind in \cref{fig:fakultaet_tests} zu sehen.
 Hier fällt auf, dass EvoSuite offenbar keinen großen Wert auf Randfälle legt.
 Der Testfall \texttt{test0} deckt mit dem Wert 16 einen Randfall ab (16 ist der größte Wert, bei dem die \lstinline{if}-Anweisung nicht ausgeführt wird).
 Der entsprechende Randfall für die Gegenseite mit einem Wert von 17 wird jedoch nicht abgedeckt.
-Solche Randfälle abzudecken ist jedoch eine einfache Möglichkeit um den \textit{mutation score} zu verbessert.
+Solche Randfälle abzudecken ist jedoch eine einfache Möglichkeit, um den \textit{mutation score} zu verbessert.
 Ändert man den Wert in \texttt{test1} von 3628800 zu 17, verbessert sich der \textit{mutation score} von 68\% zu 74\%, ohne dass sich dies negativ auf die Abdeckung auswirkt.
 
 Der Grund dafür, dass EvoSuite kaum Tests für solche Randfälle generiert, besteht vermutlich darin, dass die Fitnessfunktion aus \cref{fig:fitnessfunktion} keinen Unterschied zwischen Testsuiten macht, die alle Zweige abdecken.
@@ -456,10 +457,8 @@ EvoSuite ist ein vielversprechendes Werkzeug für die Generierung von Test-fäll
 Es ist einfach zu benutzen und schneidet sehr gut bei der \textit{Search-Based Software Testing Competition} ab.
 Darüber hinaus wird es ständig weiterentwickelt (der letzte Commit ist aus diesem Jahr) und es gibt ganze 54 wissenschaftliche Veröffentlichungen von den Autoren von EvoSuite auf deren Internetseite: \url{http://www.evosuite.org/publications}
 
-Obwohl EvoSuite bei typischen Metriken, wie Testabdeckung sehr gute Ergebnisse erzielt, ist noch mehr Forschung notwendig, um den Einsatz in der Praxis zu verbessern.
+Doch obwohl EvoSuite bei typischen Metriken, wie Testabdeckung sehr gute Ergebnisse erzielt, ist noch mehr Forschung notwendig, um den Einsatz in der Praxis zu verbessern.
 Dafür wurden bereits zwei mögliche Forschungsbereiche in \cref{sec:praxistauglichkeit} vorgestellt.
-
-\newpage
 
 \bibliography{references}
 \bibliographystyle{plainnat}
