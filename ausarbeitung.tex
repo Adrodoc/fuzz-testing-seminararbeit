@@ -41,7 +41,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \title{\textbf{EvoSuite}\\
-Automatic Test Suite Generation for Java}
+Automatisierte Generierung von Testsuites für Java}
 \author{Adrian Uffmann\\
 Matrikelnummer: 12043921\\
 \texttt{adrian.uffmann@campus.lmu.de}}
@@ -57,8 +57,8 @@ Masterseminar Fuzz Testing
 
 \begin{abstract}
 EvoSuite ist ein Programm, welches mithilfe eines genetischen Algorithmus automatisiert JUnit-Testfälle aus Java-Bytecode generieren kann.
-Auf der Internetseite des Projektes (\url{http://www.evosuite.org/publications}) werden 54 Publikationen zu EvoSuite und dessen Vorgänger ${\mu}Test$ aufgelistet.
-Diese Seminararbeit gibt einen Überblick über die Funktionsweise von EvoSuite.
+Diese Seminararbeit gibt einen Überblick über die Funktionsweise von EvoSuite und fasst die Ergebnisse einer empirischen Studie über die Praxistauglichkeit dieses Werkzeugs zusammen.
+Insbesondere wird dabei klar, dass mehr Forschungsbedarf besteht, um die Errungenschaften im Bereich von Search-Based Software Testing auch in der professionellen Softwareentwicklung nutzen zu können.
 \end{abstract}
 
 \section{Einleitung}
@@ -418,14 +418,27 @@ Im Jahr 2015 belegte EvoSuite den zweiten Platz \cite{7173585}.
 Die Ergebnisse des Wettbewerbs im Jahr 2014 konnte ich leider nicht finden.
 
 \section{Praxistauglichkeit}
+\label{sec:praxistauglichkeit}
 
 Auch wenn EvoSuite bei Metriken, wie Testabdeckung und \textit{mutation score} gut abschneidet, bleibt die Frage, ob Werkzeuge wie EvoSuite beim Einsatz in der Praxis wirklich Vorteile bringen.
 Diese Frage ist besonders wichtig, da der Einsatz von Werkzeugen zur Testgenerierung in der professionellen Softwareentwicklung relativ gering ausfällt.
 Aus diesem Grund haben die Autoren von EvoSuite mehrere Studien zu diesem Thema durchgeführt \cite{ISSTA13_Study, ISSTA15_Study, TOSEM_userstudy}.
 Interessanterweise gab es in \cite{TOSEM_userstudy} zwar eine starke Verbesserung bei Metriken, wie Testabdeckung (von bis zu 300\%), aber keine Verbesserung bei der Anzahl der gefundenen Fehler.
-Dieses Ergebnis stellt klar, dass die Annahme, dass das Generieren von Testfällen mit hoher Testabdeckung einen Mehrwert für Softwaretester bringt, nicht zwingend korrekt ist.
-Die Studie zeigt damit, dass mehr Forschung über die Folgeprobleme von Testgenerierung notwendig ist, sodass Entwickler gut mit den generierten Testfällen umgehen können.
-Die reine Konzentration auf Metriken, wie Testabdeckung ist nicht ausreichend.
+Die Annahme, dass das Generieren von Testfällen mit hoher Testabdeckung einen Mehrwert für Softwaretester bringt, wird damit in Frage gestellt.
+Die Studie zeigt, dass mehr Forschung über die Folgeprobleme von Testgenerierung notwendig ist, sodass Entwickler gut mit den generierten Testfällen umgehen können.
+Die reine Konzentration auf Metriken wie Testabdeckung ist nicht ausreichend.
+
+Die Autoren geben hierzu in \cite{TOSEM_userstudy} mehrere Bereiche an, die verbessert werden könnten.
+Zum einen sollten Softwaretestern nur Testfälle von hoher Qualität präsentiert werden, damit sich der Aufwand lohnt, diese zu verstehen.
+Ansonsten fürchten die Autoren, dass das Vertrauen in Werkzeuge zur Testgenerierung leidet.
+Um dies zu gewährleisten werden bessere Methoden zur Bewertung der Verständlichkeit und Wichtigkeit von Testfällen benötigt.
+
+Ein weiterer möglicher Forschungsbereich ist die effiziente Verbindung von automatisierter Testgenerierung mit manueller Testerstellung.
+Prinzipiell gibt es zwei Ansätze die beiden zu kombinieren.
+Entweder kann mit dem Generieren einer Testsuite begonnen werden, welche dann durch den Tester evaluiert und verfeinert wird.
+Oder der Tester startet mit dem manuellen Erstellen von Tests und generiert anschließend Tests, für die noch nicht abgedeckten Teile des Programms.
+Dies wird von EvoSuite mit dem Parameter \texttt{-Djunit} bereits unterstützt.
+Der zweite Ansatz erlaubt es dem Tester, sich zunächst auf die wichtigen Funktionalitäten und Randfälle zu konzentrieren und theoretisch könnten die bestehenden Testfälle beim Generieren genutzt werden, um fachlich sinnvolle Werte und \textit{Assertions} zu extrahieren.
 
 \section{Fazit}
 
@@ -433,9 +446,8 @@ EvoSuite ist ein vielversprechendes Werkzeug für die Generierung von Test-fäll
 Es ist einfach zu benutzen und schneidet sehr gut bei der Seach-Based Software Testing Competition ab.
 Darüber hinaus wird es ständig weiterentwickelt (der letzte Commit ist aus diesem Jahr) und es gibt ganze 54 wissenschaftliche Veröffentlichungen von den Autoren von EvoSuite auf deren Internetseite: \url{http://www.evosuite.org/publications}
 
-% TDD
-% Randfälle
-% Tester muss merken wenn Szenarien fehlen
+Obwohl EvoSuite bei typischen Metriken, wie Testabdeckung sehr gute Ergebnisse erzielt, ist noch mehr Forschung notwendig, um den Einsatz in der Praxis zu verbessern.
+Dafür wurden bereits zwei mögliche Forschungsbereiche in \cref{sec:praxistauglichkeit} vorgestellt.
 
 \bibliography{references}
 \bibliographystyle{plainnat}
