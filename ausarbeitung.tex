@@ -187,7 +187,7 @@ Bei der Mutation von Zeichenketten werden, ähnlich wie bei der Mutation von Tes
 Bei Zuweisungen wird zufällig eine der beiden Seiten durch ein anderes Feld, bzw. einen anderen Wert ersetzt.
 
 Für Feld-, Konstruktor- und Methoden-Anweisungen wird zufällig ein anderes Feld, ein anderer Konstruktor, oder eine andere Methode ausgesucht, deren Parameter mit den verfügbaren Werten erfüllt werden können.
-Dabei ist es z. B. auch möglich, dass aus einer Feld-Anweisung eine Methoden-Anweisung wird.
+Dabei ist es z. B. auch möglich, dass aus einer Feld-Anweisung eine Metho-den-Anweisung wird.
 
 Beim Einfügen von Anweisungen wird dem Testfall mit einer Wahrscheinlichkeit von $\sigma$ eine zufällige Anweisung hinzugefügt.
 Als Parameter für Methoden- oder Konstruktoraufrufe werden dabei die bereitgestellten Werte wiederverwendet oder neue Werte generiert, die direkt eingesetzt werden.
@@ -195,7 +195,7 @@ Dies wird wiederholt, bis in einem Schritt mit einer Wahrscheinlichkeit von $(1 
 Durch dieses Vorgehen sinkt die Wahrscheinlichkeit weitere Anweisungen einzufügen exponentiell.
 $i$ oder mehr Anweisungen werden also nur mit einer Wahrscheinlichkeit von $\sigma^i$ eingefügt.
 
-Mit dem bis hier beschriebenen Mutationsoperator können Testfälle länger werden, kürzer werden, oder sogar entfallen.
+Mit dem bis hier beschriebenen Mutationsoperator können Testfälle län-ger werden, kürzer werden, oder sogar entfallen.
 Es ist aber bisher nicht möglich, dass neue Testfälle entstehen und auch durch die Rekombination kann die Anzahl der Testfälle in einer Testsuite nicht größer werden, als die Anzahl der Testfälle im größeren Elternteil.
 Aus diesem Grund wird bei der Mutation einer Testsuite nach dem Mutieren der Testfälle mit einer Wahrscheinlichkeit von $\sigma'$ ein zufälliger neuer Testfall erzeugt.
 Genau wie bei dem Einfügen von Anweisungen werden hier mit exponentiell sinkender Wahrscheinlichkeit weitere Testfälle hinzugefügt.
@@ -218,7 +218,7 @@ Diese Pfade können sich selbst wieder aufteilen oder wieder zu einem Pfad zusam
 Da EvoSuite nicht Quellcode, sondern Bytecode betrachtet, sind kompliziertere Anweiungen, wie \lstinline{switch}-Anweisungen oder Schleifen bereits in einfache Verzweigungen übersetzt worden.
 Eine optimale Testsuite führt demnach jede Anweisung in der getesteten Klasse aus, indem jede Bedingung mindestens einmal zu wahr und falsch evaluiert wird.
 
-Da genetische Algorithmen durch Mutation nur kleine zufällige Änderungen erzeugen, ist es wichtig, dass bereits kleine Änderungen eine Verbesserung der Fitness erreichen können.
+Da genetische Algorithmen durch Mutation nur kleine zufällige Änder-ungen erzeugen, ist es wichtig, dass bereits kleine Änderungen eine Verbesserung der Fitness erreichen können.
 Wenn sich die Fitnessfunktion nur verbessert, wenn mehr Programmpfade abgedeckt werden, ist es sehr unwahrscheinlich, dass eine kleine Änderung die Fitness verbessert, da es sehr schwer ist, genau die richtigen Werte zu erraten, um eine Bedingung zu erfüllen.
 Aus diesem Grund wird die \textit{branch distance} $d_{min}(b, T)$ von \citet{10.1109/32.57624} verwendet.
 
@@ -336,7 +336,7 @@ Ein Aufruf von EvoSuite sieht damit wie folgt aus: \texttt{java -jar evosuite-ma
 In all diesen einfachen Beispielen erreichte EvoSuite einen \textit{mutation score} von über 65\% bei einer Zweigabdeckung von 100\%.
 Der \textit{mutation score} erschien mir etwas niedrig für so einfache Programme, insbesondere bei einer Zweigabdeckung von 100\%.
 \cref{fig:fakultaet} zeigt als konkretes Beispiel eine einfache Fakultätsfunktion.
-Mit einem Seed von 0 generierte EvoSuite Tests mit einem \textit{mutation score} von 68\% (Gemessen mit \texttt{java -jar evosuite-1.0.6.jar -target classesDir -class Fakultaet -projectCP testClassesDir -seed 0 -measureCoverage -criterion MUTATION:BRANCH}).
+Mit einem Seed von 0 generierte EvoSuite Tests mit einem \textit{mutation score} von 68\% (Gemessen mit \texttt{-measureCoverage -criterion MUTATION:BRANCH}).
 D. h. nur 68\% der Mutanten wurden durch die Tests getötet.
 Die von EvoSuite generierten Tests sind in \cref{fig:fakultaet_tests} zu sehen.
 Hier fällt auf, dass EvoSuite offenbar keinen großen Wert auf Randfälle legt.
