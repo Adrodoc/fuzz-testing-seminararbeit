@@ -206,7 +206,7 @@ Die zufälligen Testfälle werden dabei genau wie bei der Mutation von Testsuite
 
 Als letztes muss für den genetischen Algorithmus noch die Fitnessfunktion definiert werden.
 Hier implementiert EvoSuite verschiedene Ansätze.
-Z. B. können Testfälle mit \textit{Mutation-Testing} generiert werden \cite{TSE12_Mutation}.
+Z. B. können Testfälle mit \textit{Mutation-Testing} generiert werden \cite{emse14_mutation}.
 In dieser Arbeit wird jedoch die Maximierung der Testabdeckung aus \cite{TSE12_EvoSuite} betrachtet.
 Gesucht ist dabei eine Testsuite, die mit möglichst wenig Anweisungen, möglichst viele Zweige der getesteten Klasse ausführt.
 Jede Methode hat dabei einen Programmpfad (den Körper der Methode), welcher sich an einer \lstinline{if}-Anweisung in zwei Pfade aufteilt.
@@ -289,10 +289,32 @@ Dieses Problem wird durch die Fallunterscheidung in der Funktion $d(b, T)$ volls
 \label{sec:erzeugen_von_orakeln}
 
 Mit dem Vorgehen in \cref{sec:erzeugen_von_testfaellen} können Testsuites mit möglichst hoher Testabdeckung erzeugt werden, aber diese Testsuites enthalten noch keine Orakel.
+Orakel werden in EvoSuite in einem zweiten Schritt generiert.
+Dadurch kann der Algorithmus für das Erzeugen von Testfällen leicht angepasst oder ersetzt werden, ohne dass sich das auf das Erzeugen von Orakeln auswirkt.
 
-Dieser Abschnitt stützt sich vor allem auf \cite{TSE12_Mutation}.
+EvoSuite nutzt für das Erzeugen von Orakeln sogenanntes \textit{Mutation-Testing} \cite{TSE12_Mutation, emse14_mutation}.
+Die Idee dabei ist, das zu testende Programm durch kleine Mutationen zu verändern, um zu sehen, welche Orakel diese Änderung bemerken würden.
+Mutation bedeutet hier etwas anderes als in dem genetischen Algorithmus aus \cref{sec:erzeugen_von_testfaellen}.
+Mutationen sind hier kleine Änderungen, die typische Programmierfehler darstellen sollen.
+Das kann zum Beispiel das Austauschen von arithmetischen Operationen, oder das Entfernen von Methodenaufrufen sein.
+Die vollständige Liste dieser Mutationsoperatoren befindet sich in \cite{emse14_mutation}.
 
-Mutation bedeutet hier etwas anderes, als bei genetischen Algorithmen.
+Jedes mutierte Programm wird mit dem Originalprogramm verglichen und alle Orakel, die einen Unterschied zwischen den Beiden feststellen, werden mit dem Mutanten assoziiert.
+Man spricht hier auch davon, dass das Orakel den Mutanten tötet.
+Als Orakel dienen in EvoSuite \textit{Assertions}.
+Nach \citep{TSE12_Mutation} werden hier sieben Arten von \textit{Assertions} unterschieden:
+\begin{itemize}
+	\item Primitive Assertions, wie \lstinline{assertEquals(0, int0)}.
+	\item Vergleichs-Assertions, wie \lstinline{assertFalse(var2.equals(var0))}.
+	\item Inspektor-Assertions, wie \lstinline{assertEquals(0, intStack0.size())}.
+	\item Feld-Assertions, wie \lstinline{assertEquals(1, intStack0.size)}.
+	\item Null-Assertions, wie \lstinline{assertNull(intStack1)}.
+	\item Exception-Assertions.
+\end{itemize}
+Nachdem alle Mutanten betrachtet wurden, werden überflüssige \textit{Assertions} entfernt.
+Das Ziel dabei ist es, so wenig \textit{Assertions} wie möglich zu behalten und trotzdem alle Mutanten zu töten.
+Dieses Problem ist eine Instanz des NP-vollständigen \textit{minimum set cover} Problems.
+Daher wird eine einfache Heuristik aus \cite{chvatal1979greedy} verwendet, bei der immer die \textit{Assertion} aufgenommen wird, die die meisten zusätzlichen Mutanten tötet, bis die Menge der aufgenommenen \textit{Assertions} alle Mutanten tötet.
 
 \section{Search-Based Software Testing Competition}
 
@@ -306,7 +328,7 @@ Die Ergebnisse des Wettbewerbs im Jahr 2014 konnte ich leider nicht finden.
 
 \section{Evaluation}
 
-EvoSuite ist wird öffentlich auf GitHub gehostet, wodurch der Quellcode einfach mit Git heruntergeladen werden konnte.
+EvoSuite wird öffentlich auf GitHub gehostet, wodurch der Quellcode einfach mit Git heruntergeladen werden konnte.
 Mit einer Maven 3.6.2 Installation (\url{https://maven.apache.org/}) konnten ich leicht eigene Versionen von EvoSuite basierend auf dem \textit{master-Branch} und \textit{1.0.6-Tag} bauen.
 Leider schlugen einige Tests im \textit{evosuite-client}-Projekt fehl, daher musste ich Maven mit \texttt{mvn install -DskipTests} aufrufen.
 
@@ -314,30 +336,76 @@ Da EvoSuite Testfälle generiert, die von einem Tester evaluiert werden müssen,
 Stattdessen habe ich ein paar sehr einfache Klassen geschrieben und aus diesen mit EvoSuite Tests generiert.
 
 EvoSuite kann per Kommandozeile aufgerufen werden und unterstützt eine große Anzahl and Parametern.
-Da die kleinen Beispiele, die ich verwendete, keine externen Bibliotheken benutzen, war benötigte ich für diese Beispiele nur den \texttt{-target} Parameter.
+Da die kleinen Beispiele, die ich verwendete, keine externen Bibliotheken benutzen, benötigte ich für diese Beispiele nur den \texttt{-target} Parameter.
 Ein Aufruf von EvoSuite sieht damit wie folgt aus: \texttt{java -jar evosuite-master-1.0.6.jar -target classesDir}
 
+In all diesen einfachen Beispielen erreichte EvoSuite einen Mutationscore von über 75\% bei einer Zweigabdeckung von 100\%.
+Der Mutationscore erschien mir etwas niedrig für so einfache Programme, insbesondere bei einer Zweigabdeckung von 100\%.
+\cref{fig:fakultaet} zeigt als konkretes Beispiel eine einfache Fakultätsfunktion.
+Mit einem Seed von 0 generierte EvoSuite Tests mit einem Mutationscore von 85\%, d. h. nur 85\% der Mutanten wurden durch die Tests getötet.
+Die von EvoSuite generierten Tests sind in \cref{fig:fakultaet_tests} zu sehen. 
+
+\begin{figure}[h]
+	\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+public class Fakultaet {
+  private Fakultaet() {}
+
+  public static int fakultaet(int n) {
+    if (n > 16) {
+      throw new IllegalArgumentException(n + "! is out of int range");
+    }
+    int result = 1;
+    for (int i = 2; i <= n; i++) {
+      result *= i;
+    }
+    return result;
+  }
+}
+	\end{lstlisting}
+	\caption{Einfache Fakultätsfunktion}
+	\label{fig:fakultaet}
+\end{figure}
+
+\begin{figure}
+	\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+@Test(timeout = 4000)
+public void test0()  throws Throwable  {
+    int int0 = Fakultaet.fakultaet(16);
+    assertEquals(2004189184, int0);
+}
+
+@Test(timeout = 4000)
+public void test1()  throws Throwable  {
+    // Undeclared exception!
+    try { 
+      Fakultaet.fakultaet(3628800);
+      fail("Expecting exception: IllegalArgumentException");
+    
+    } catch(IllegalArgumentException e) {
+       //
+       // 3628800! is out of int range
+       //
+       verifyException("fuzz.testing.Fakultaet", e);
+    }
+}
+
+@Test(timeout = 4000)
+public void test2()  throws Throwable  {
+    int int0 = Fakultaet.fakultaet(10);
+    assertEquals(3628800, int0);
+}
+	\end{lstlisting}
+	\caption{Generierte Tests für Fakultätsfunktion in \cref{fig:fakultaet}}
+	\label{fig:fakultaet_tests}
+\end{figure}
+
+Erklären warum Mutationscore so niedrig.
+
 \section{Fazit}
+
+Bla
 
 \bibliography{references}
 \bibliographystyle{plainnat}
 
 \end{document}
-
-%Originalpapiere siehe z.B.: \cite{TSE12_EvoSuite,10.1109/32.57624,emse14_mutation},
-%Zitieren mit Autorennamen, z.B.: \citet{TSE12_EvoSuite}.
-%Grundlagen in \cref{sec:background} und Code Beispiel in \cref{fig:abs}.
-%
-%Infos zu \LaTeX: \url{https://en.wikibooks.org/wiki/LaTeX}
-%
-%\begin{figure}
-%\centering
-%\begin{verbatim}
-%int abs(int x) {
-%    if(x >= 0) return x;
-%    else return -x;
-%}
-%\end{verbatim}
-%\caption{Betragsfunktion in C/Java}
-%\label{fig:abs}
-%\end{figure}
