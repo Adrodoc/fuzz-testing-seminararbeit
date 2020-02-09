@@ -104,10 +104,10 @@ In jedem Fall ist das Ergebnis des genetischen Algorithmus das beste Individuum.
 Um ein konkretes Optimierungsproblem mit einem genetischen Algorithmus zu lösen, muss genau definiert werden, was ein Individuum ist, aus welchen Individuen die Anfangspopulation besteht, wie die Rekombinations- und Mutationsoperatoren neue Individuen erzeugen und wie die Fitnessfunktion aussieht.
 Dies ist von Problem zu Problem unterschiedlich.
 
-\section{Erzeugen von Testfällen}
-\label{sec:erzeugen_von_testfaellen}
+\section{Erzeugen von Testsuiten}
+\label{sec:erzeugen_von_testsuiten}
 
-\subsection{Betrachten von ganzen Testsuiten auf einmal}
+\subsection{Betrachten von Testsuiten in ihrer Gesamtheit}
 
 EvoSuite beginnt mit dem Generieren von Testfällen ohne Orakel.
 Dafür werden verschiedene Algorithmen angeboten.
@@ -299,17 +299,17 @@ Eine Minimierung der \textit{branch distance} für den anderen Zweig würde aber
 Nun würde die Fitnessfunktion wiederum Individuen bevorzugen, die die \textit{branch distance} des ersten Zweigs minimieren und es ergibt sich ein oszillierendes Verhalten.
 Dieses Problem wird durch die Fallunterscheidung in der Funktion $d(b, T)$ vollständig vermieden.
 
-\section{Erzeugen von Orakeln mit Mutation-Testing}
+\section{Erzeugen von Orakeln}
 \label{sec:erzeugen_von_orakeln}
 
-Mit dem Vorgehen in \cref{sec:erzeugen_von_testfaellen} können Testsuiten mit möglichst hoher Testabdeckung erzeugt werden, aber diese Testsuiten enthalten noch keine Orakel.
+Mit dem Vorgehen in \cref{sec:erzeugen_von_testsuiten} können Testsuiten mit möglichst hoher Testabdeckung erzeugt werden, aber diese Testsuiten enthalten noch keine Orakel.
 Orakel werden in EvoSuite in einem zweiten Schritt generiert.
 Dadurch kann der Algorithmus für das Erzeugen von Testfällen leicht angepasst oder ersetzt werden, ohne dass sich das auf das Erzeugen von Orakeln auswirkt.
 
 EvoSuite nutzt für das Erzeugen von Orakeln sogenanntes \textit{Mutation-Testing} \cite{TSE12_Mutation, emse14_mutation}.
 Die Idee dabei ist, das zu testende Programm durch kleine Mutationen zu verändern, um zu sehen, welche Orakel diese Änderung bemerken würden.
-Mutation bedeutet hier etwas anderes als in dem genetischen Algorithmus aus \cref{sec:erzeugen_von_testfaellen}.
-Mutationen sind hier kleine Änderungen, die typische Programmierfehler darstellen sollen.
+Mutation bedeutet hier etwas anderes als in den genetischen Algorithmen aus \cref{sec:genetische_algorithmen}.
+Hier sind Mutationen kleine Änderungen, die typische Programmierfehler darstellen sollen.
 Das kann zum Beispiel das Austauschen von arithmetischen Operationen oder das Entfernen von Methodenaufrufen sein.
 Die vollständige Liste dieser Mutationsoperatoren befindet sich in \cite{emse14_mutation}.
 
