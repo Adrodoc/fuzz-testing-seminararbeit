@@ -57,7 +57,7 @@ Masterseminar Fuzz Testing
 
 \begin{abstract}
 EvoSuite ist ein Programm, welches mithilfe eines genetischen Algorithmus automatisiert JUnit-Testfälle aus Java-Bytecode generieren kann.
-Auf der Internetseite des Projektes (\url{http://www.evosuite.org/publications/}) werden 54 Publikationen zu EvoSuite und dessen Vorgänger ${\mu}Test$ aufgelistet.
+Auf der Internetseite des Projektes (\url{http://www.evosuite.org/publications}) werden 54 Publikationen zu EvoSuite und dessen Vorgänger ${\mu}Test$ aufgelistet.
 Diese Seminararbeit gibt einen Überblick über die Funktionsweise von EvoSuite.
 \end{abstract}
 
@@ -81,7 +81,7 @@ Dazu nutzt EvoSuite einen genetischen Algorithmus mit dem zufällige Test-fälle
 Die Testfälle werden dann minimiert um die Arbeit des Softwaretesters zu vereinfachen und es werden mit sogenanntem \textit{Mutation-Testing} möglichst repräsentative Orakel ausgewählt.
 
 EvoSuite wurde seit 2010 immer weiter entwickelt und es sind verschiedene Algorithmen für das Generieren von Testfällen implementiert, die über die Kommandozeile ein- und ausgeschaltet werden können.
-Dazu haben die Autoren von EvoSuite auf der Internetseite (\url{http://www.evosuite.org/publications/}) 54 Artikel über die Konzepte in und die Evaluation von EvoSuite und dessen Vorgänger ${\mu}Test$ veröffentlicht.
+Dazu haben die Autoren von EvoSuite auf der Internetseite (\url{http://www.evosuite.org/publications}) 54 Artikel über die Konzepte in und die Evaluation von EvoSuite und dessen Vorgänger ${\mu}Test$ veröffentlicht.
 Um den vorgegebenen Umfang einzuhalten, kann diese Seminararbeit nur Überblick über einen kleinen Teil von EvoSuite geben.
 
 \section{Genetische Algorithmen}
@@ -320,18 +320,10 @@ Das Ziel dabei ist es, so wenig \textit{Assertions} wie möglich zu behalten und
 Dieses Problem ist eine Instanz des NP-vollständigen \textit{minimum set cover} Problems.
 Daher wird eine einfache Heuristik aus \cite{chvatal1979greedy} verwendet, bei der immer die \textit{Assertion} aufgenommen wird, die die meisten zusätzlichen Mutanten tötet, bis die Menge der aufgenommenen \textit{Assertions} alle Mutanten tötet.
 
-\section{Search-Based Software Testing Competition}
-
-EvoSuite hat bisher bei allen Seach-Based Software Testing (SBST) Competitions teilgenommen.
-Dieser Wettbewerb wird seit 2013 jedes Jahr vom International Workshop on Search-Based Software Testing veranstaltet.
-EvoSuite konnte sich dabei gegenüber den anderen Werkzeugen durchsetzen und erzielte in den Jahren 2013 und 2016 - 2019 jeweils den ersten Platz \cite{6571663, 7810701, 7967958, 8452806, 8812209}.
-Im Jahr 2015 belegte EvoSuite den zweiten Platz \cite{7173585}.
-Die Ergebnisse des Wettbewerbs im Jahr 2014 konnte ich leider nicht finden.
-
 \section{Evaluation}
 
 EvoSuite wird öffentlich auf GitHub gehostet, wodurch der Quellcode einfach mit Git heruntergeladen werden konnte.
-Mit einer Maven 3.6.2 Installation (\url{https://maven.apache.org/}) konnte ich leicht eigene Versionen von EvoSuite basierend auf dem \textit{master-Branch} und \textit{1.0.6-Tag} bauen.
+Mit einer Maven 3.6.2 Installation (\url{https://maven.apache.org}) konnte ich leicht eigene Versionen von EvoSuite basierend auf dem \textit{master-Branch} und \textit{1.0.6-Tag} bauen.
 Leider schlugen einige Tests im \textit{evosuite-client}-Projekt fehl, daher musste ich Maven mit \texttt{mvn install -DskipTests} aufrufen.
 
 Da EvoSuite Testfälle generiert, die von einem Tester evaluiert werden müssen, um Fehler zu finden, wäre es für diese Seminararbeit zu aufwändig EvoSuite an einer echten Bibliothek zu evaluieren.
@@ -412,9 +404,38 @@ Wenn beide Zweige einer Bedingung abgedeckt sind, ist die \textit{branch distanc
 Möglicherweise könnte hier eine mehrdimensionale Bewertung eine Verbesserung bringen, in der bei gleicher \textit{branch distance} die \textit{branch distance} zum jeweils anderen Zweig der Bedingung betrachtet wird.
 Dies könnte sich allerdings auch negativ auf die Evolution im genetischen Algorithmus auswirken.
 
+Ein weiterer Punkt, der auffällt ist, dass EvoSuite keine Testfälle generiert, in denen die Fakultätsfunktion mit 0 oder negativen Zahlen aufgerufen wird.
+Das ergibt Sinn, denn obwohl die Fakultät für negative Zahlen undefiniert ist und die Zahl 0 dadurch einen interessanten Randfall darstellt, wird dies im Programm nicht gesondert behandelt.
+Es gibt also keinen Anhaltspunkt für EvoSuite, um festzustellen, dass diese Fakultätsfunktion negative Zahlen falsch behandelt.
+Daher ist es wichtig für Softwaretester, nicht nur die generierten Testfälle auf Richtigkeit zu prüfen, sondern sich auch zu überlegen, ob wichtige Testfälle fehlen.
+
+\section{Search-Based Software Testing Competition}
+
+EvoSuite hat bisher bei allen Seach-Based Software Testing (SBST) Competitions teilgenommen.
+Dieser Wettbewerb wird seit 2013 jedes Jahr vom International Workshop on Search-Based Software Testing veranstaltet.
+EvoSuite konnte sich dabei gegenüber den anderen Werkzeugen durchsetzen und erzielte in den Jahren 2013 und 2016 - 2019 jeweils den ersten Platz \cite{6571663, 7810701, 7967958, 8452806, 8812209}.
+Im Jahr 2015 belegte EvoSuite den zweiten Platz \cite{7173585}.
+Die Ergebnisse des Wettbewerbs im Jahr 2014 konnte ich leider nicht finden.
+
+\section{Praxistauglichkeit}
+
+Auch wenn EvoSuite bei Metriken, wie Testabdeckung und \textit{mutation score} gut abschneidet, bleibt die Frage, ob Werkzeuge wie EvoSuite beim Einsatz in der Praxis wirklich Vorteile bringen.
+Diese Frage ist besonders wichtig, da der Einsatz von Werkzeugen zur Testgenerierung in der professionellen Softwareentwicklung relativ gering ausfällt.
+Aus diesem Grund haben die Autoren von EvoSuite mehrere Studien zu diesem Thema durchgeführt \cite{ISSTA13_Study, ISSTA15_Study, TOSEM_userstudy}.
+Interessanterweise gab es in \cite{TOSEM_userstudy} zwar eine starke Verbesserung bei Metriken, wie Testabdeckung (von bis zu 300\%), aber keine Verbesserung bei der Anzahl der gefundenen Fehler.
+Dieses Ergebnis stellt klar, dass die Annahme, dass das Generieren von Testfällen mit hoher Testabdeckung einen Mehrwert für Softwaretester bringt, nicht zwingend korrekt ist.
+Die Studie zeigt damit, dass mehr Forschung über die Folgeprobleme von Testgenerierung notwendig ist, sodass Entwickler gut mit den generierten Testfällen umgehen können.
+Die reine Konzentration auf Metriken, wie Testabdeckung ist nicht ausreichend.
+
 \section{Fazit}
 
-Bla
+EvoSuite ist ein vielversprechendes Werkzeug für die Generierung von Test-fällen.
+Es ist einfach zu benutzen und schneidet sehr gut bei der Seach-Based Software Testing Competition ab.
+Darüber hinaus wird es ständig weiterentwickelt (der letzte Commit ist aus diesem Jahr) und es gibt ganze 54 wissenschaftliche Veröffentlichungen von den Autoren von EvoSuite auf deren Internetseite: \url{http://www.evosuite.org/publications}
+
+% TDD
+% Randfälle
+% Tester muss merken wenn Szenarien fehlen
 
 \bibliography{references}
 \bibliographystyle{plainnat}
