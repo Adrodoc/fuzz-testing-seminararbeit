@@ -5,6 +5,7 @@
 
 % weitere Pakete hier
 \usepackage{amsmath}
+\usepackage{graphicx}
 \usepackage{multicol}
 \usepackage{xcolor}
 
@@ -153,6 +154,8 @@ Für eine Anweisung $s$ wird dieser Wert im folgenden als $v(s)$ bezeichnet.
 \subsection{Erzeugen neuer Individuen}
 
 Als Nächstes müssen die Rekombination und Mutation definiert werden.
+Diese beiden Operatoren sind in \cref{fig:rekombination_und_mutation} schematisch dargestellt.
+
 Die Rekombination ist in EvoSuite sehr einfach gehalten.
 Hierbei werden mit einer bestimmten Wahrscheinlichkeit aus den beiden Eltern-Testsuiten $P_1$ und $P_2$ die beiden Kind-Testsuiten $O_1$ und $O_2$ erstellt.
 Zunächst wird ein Anteil $\alpha \in [0;1]$ gewählt.
@@ -160,6 +163,12 @@ Das Kind $O_1$ ergibt sich, indem der Anteil $\alpha$ der Testfälle von $P_1$ m
 Das Kind $O_2$ besteht dann aus den übrigen $(1 - \alpha) \times |P_1|$ Testfällen von $P_1$ und den übrigen $\alpha \times |P_2|$ Testfällen von $P_2$.
 Individuen können durch diese Rekombination nicht länger oder kürzer werden, als der längste, bzw. kürzeste Elternteil.
 Im Durchschnitt nähern sich dadurch alle Individuen der gleichen Anzahl an Testfällen an.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{evosuite-crossover-and-mutation.png}
+	\caption{Rekombination und Mutation aus \citep{TSE12_EvoSuite}}
+	\label{fig:rekombination_und_mutation}
+\end{figure}
 
 Die Mutation einer Testsuite $T$ ist deutlich komplexer, als die Rekombination.
 Hierbei wird jeder Testfall $t$ mit einer Wahrscheinlichkeit von $\frac{1}{|T|}$ mutiert.
@@ -334,18 +343,6 @@ EvoSuite kann per Kommandozeile aufgerufen werden und unterstützt eine große A
 Da die kleinen Beispiele, die ich verwendete, keine externen Bibliotheken benutzen, benötigte ich für diese Beispiele nur den \texttt{-target} Parameter.
 Ein Aufruf von EvoSuite sieht damit wie folgt aus: \texttt{java -jar evosuite-master-1.0.6.jar -target classesDir -seed 0}
 
-In all diesen einfachen Beispielen erreichte EvoSuite einen \textit{mutation score} von über 65\% bei einer Zweigabdeckung von 100\%.
-Der \textit{mutation score} erschien mir etwas niedrig für so einfache Programme, insbesondere bei einer Zweigabdeckung von 100\%.
-\cref{fig:fakultaet} zeigt als konkretes Beispiel eine einfache Fakultätsfunktion.
-Mit einem Seed von 0 generierte EvoSuite Tests mit einem \textit{mutation score} von 68\% (Gemessen mit \texttt{-measureCoverage -criterion MUTATION:BRANCH}).
-D.~h. nur 68\% der Mutanten wurden durch die Tests getötet.
-Die von EvoSuite generierten Tests sind in \cref{fig:fakultaet_tests} zu sehen.
-Hier fällt auf, dass EvoSuite offenbar keinen großen Wert auf Randfälle legt.
-Der Testfall \texttt{test0} deckt mit dem Wert 16 einen Randfall ab (16 ist der größte Wert, bei dem die \lstinline{if}-Anweisung nicht ausgeführt wird).
-Der entsprechende Randfall für die Gegenseite mit einem Wert von 17 wird jedoch nicht abgedeckt.
-Solche Randfälle abzudecken ist jedoch eine einfache Möglichkeit um den \textit{mutation score} zu verbessert.
-Ändert man den Wert in \texttt{test1} von 3628800 zu 17, verbessert sich der \textit{mutation score} von 68\% zu 74\%, ohne dass sich dies negativ auf die Abdeckung auswirkt.
-
 \begin{figure}[h]
 	\begin{lstlisting}[basicstyle=\ttfamily\tiny]
 public class Fakultaet {
@@ -400,6 +397,18 @@ public void test2()  throws Throwable  {
 	\label{fig:fakultaet_tests}
 \end{figure}
 
+In all diesen einfachen Beispielen erreichte EvoSuite einen \textit{mutation score} von über 65\% bei einer Zweigabdeckung von 100\%.
+Der \textit{mutation score} erschien mir etwas niedrig für so einfache Programme, insbesondere bei einer Zweigabdeckung von 100\%.
+\cref{fig:fakultaet} zeigt als konkretes Beispiel eine einfache Fakultätsfunktion.
+Mit einem Seed von 0 generierte EvoSuite Tests mit einem \textit{mutation score} von 68\% (Gemessen mit \texttt{-measureCoverage -criterion MUTATION:BRANCH}).
+D.~h. nur 68\% der Mutanten wurden durch die Tests getötet.
+Die von EvoSuite generierten Tests sind in \cref{fig:fakultaet_tests} zu sehen.
+Hier fällt auf, dass EvoSuite offenbar keinen großen Wert auf Randfälle legt.
+Der Testfall \texttt{test0} deckt mit dem Wert 16 einen Randfall ab (16 ist der größte Wert, bei dem die \lstinline{if}-Anweisung nicht ausgeführt wird).
+Der entsprechende Randfall für die Gegenseite mit einem Wert von 17 wird jedoch nicht abgedeckt.
+Solche Randfälle abzudecken ist jedoch eine einfache Möglichkeit um den \textit{mutation score} zu verbessert.
+Ändert man den Wert in \texttt{test1} von 3628800 zu 17, verbessert sich der \textit{mutation score} von 68\% zu 74\%, ohne dass sich dies negativ auf die Abdeckung auswirkt.
+
 Der Grund dafür, dass EvoSuite kaum Tests für solche Randfälle generiert, besteht vermutlich darin, dass die Fitnessfunktion aus \cref{fig:fitnessfunktion} keinen Unterschied zwischen Testsuiten macht, die alle Zweige abdecken.
 Wenn beide Zweige einer Bedingung abgedeckt sind, ist die \textit{branch distance} 0 und wirkt sich nicht mehr auf die Fitness aus.
 Möglicherweise könnte hier eine mehrdimensionale Bewertung eine Verbesserung bringen, in der bei gleicher \textit{branch distance} die \textit{branch distance} zum jeweils anderen Zweig der Bedingung betrachtet wird.
@@ -449,6 +458,8 @@ Darüber hinaus wird es ständig weiterentwickelt (der letzte Commit ist aus die
 
 Obwohl EvoSuite bei typischen Metriken, wie Testabdeckung sehr gute Ergebnisse erzielt, ist noch mehr Forschung notwendig, um den Einsatz in der Praxis zu verbessern.
 Dafür wurden bereits zwei mögliche Forschungsbereiche in \cref{sec:praxistauglichkeit} vorgestellt.
+
+\newpage
 
 \bibliography{references}
 \bibliographystyle{plainnat}
