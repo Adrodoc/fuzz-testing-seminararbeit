@@ -115,13 +115,14 @@ In dieser Seminararbeit wird jedoch nur das Verbessern von ganzen Testsuites hin
 Die Verbesserung von Testsuites in ihrer Gesamtheit ist dabei eine wichtige Neuerung, die vor EvoSuite, nach bestem Wissen der Autoren, nicht verwendet wurde.
 Nach \cite{TSE12_EvoSuite} betrachteten die meisten anderen Werkzeuge nur einzelne Programmpfade sequenziell und versuchten Testfälle zu generieren, die diese ausgewählten Pfade abdeckten.
 Ein großes Problem bei diesem Ansatz ist jedoch, dass nicht jeder Programmpfad auch erreichbar ist.
-Wenn versucht wird einen unerreichbaren Pfad zu erreichen, dann ist der dafür verwendete Aufwand verschwendet.
+Wenn versucht wird, einen unerreichbaren Pfad zu erreichen, dann ist der dafür verwendete Aufwand verschwendet.
 Ob ein bestimmter Pfad überhaupt erreichbar ist, ist allerdings ein unentscheidbares Problem, da man sonst das Halteproblem lösen könnte.
 Bei diesem Ansatz ist es demnach sehr wichtig, mit welchen Programmpfaden begonnen wird.
 
-Ein weiteres Problem ist Kollateralabdeckung.
-Wenn zunächst Testfälle generiert werden, die einfache Pfade nahe der Oberfläche des Programms abdecken, kann es passieren, dass dieselben Pfade auch erreicht werden, wenn später Testfälle für tiefere Pfade des Programms generiert werden.
-Dadurch werden die zuerst generierten Testfälle nutzlos, da sie keinen Beitrag mehr zur Testabdeckung beitragen und der Aufwand sie zu generieren war verschwendet.
+Ein weiterer Nachteil ist kollaterale Abdeckung.
+Dieses Problem kann auftreten, wenn zunächst Testfälle generiert werden, die einfache Pfade nahe der Oberfläche des Programms abdecken.
+In diesem Fall werden dieselben Pfade auch erreicht, wenn später Testfälle für tiefere Pfade des Programms generiert werden.
+Dadurch werden die zuerst generierten Testfälle nutzlos, da sie keinen Beitrag mehr zur Testabdeckung leisten und der Aufwand, sie zu generieren, war verschwendet.
 
 EvoSuite vermeidet diese Probleme, indem die Testabdeckung der gesamten Testsuite auf einmal verbessert wird.
 Statt einzelne Programmpfade auszuwählen, die erreicht werden sollen, wird bei EvoSuite gemessen, wie weit die gesamte Testsuite davon entfernt ist, alle Programmpfade abzudecken.
@@ -141,7 +142,8 @@ In EvoSuite wird zwischen 5 Arten von Anweisungen unterschieden:
 	\item Konstruktor-Anweisungen, wie \lstinline{Stack var2 = new Stack()}.
 	\item Methoden-Anweisungen, wie \lstinline{int var4 = var2.pop()}.
 \end{itemize}
-Der Sprachumfang von Java erlaubt zwar deutlich mehr Arten von Anweisungen, wie z. B. \lstinline{if}-Anweisungen, \lstinline{while}- und \lstinline{for}-Schleifen, diese sind jedoch nicht in Testfällen erwünscht, da Testfälle deterministisch sein sollen und keine Parameter erhalten, die sich auf den Kontrollfluss auswirken könnten.
+Der Sprachumfang von Java erlaubt deutlich mehr Arten von Anweisungen, wie z. B. \lstinline{if}-Anweisungen, \lstinline{while}- und \lstinline{for}-Schleifen.
+Diese sind jedoch nicht in Testfällen erwünscht, da Testfälle deterministisch sein sollen und keine Parameter erhalten, die sich auf den Kontrollfluss auswirken könnten.
 Außerdem enthalten die hier definierten Testfälle keine Orakel, wie z. B. \textit{Assertions}.
 Diese werden in einem späteren Schritt hinzugefügt (Siehe \cref{sec:erzeugen_von_orakeln}).
 
@@ -154,7 +156,7 @@ Als nächstes müssen die Rekombination und Mutation definiert werden.
 Die Rekombination ist in EvoSuite sehr einfach gehalten.
 Hierbei werden mit einer bestimmten Wahrscheinlichkeit aus den beiden Eltern-Testsuites $P_1$ und $P_2$ die beiden Kind-Testsuites $O_1$ und $O_2$ erstellt.
 Zunächst wird ein Anteil $\alpha \in [0;1]$ gewählt.
-Das Kind $O_1$ ergibt sich, indem der Anteil $\alpha$ der Testfälle von $P_1$ mit einem Anteil $1 - \alpha$ der Testfälle von $P_2$ kombiniert wird.
+Das Kind $O_1$ ergibt sich, indem der Anteil $\alpha$ der Testfälle von $P_1$ mit einem Anteil $(1 - \alpha)$ der Testfälle von $P_2$ kombiniert wird.
 Das Kind $O_2$ besteht dann aus den übrigen $(1 - \alpha) \times |P_1|$ Testfällen von $P_1$ und den übrigen $\alpha \times |P_2|$ Testfällen von $P_2$.
 Individuen können durch diese Rekombination nicht länger oder kürzer werden, als der längste, bzw. kürzeste Elternteil.
 Im Durchschnitt nähern sich dadurch alle Individuen der gleichen Anzahl an Testfällen an.
@@ -189,18 +191,18 @@ Dabei ist es z. B. auch möglich, dass aus einer Feld-Anweisung eine Methoden-An
 
 Beim Einfügen von Anweisungen wird dem Testfall mit einer Wahrscheinlichkeit von $\sigma$ eine zufällige Anweisung hinzugefügt.
 Als Parameter für Methoden- oder Konstruktoraufrufe werden dabei die bereitgestellten Werte wiederverwendet oder neue Werte generiert, die direkt eingesetzt werden.
-Dies wird wiederholt, bis in einem Schritt mit einer Wahrscheinlichkeit von $1 - \sigma$ keine neue Anweisung eingefügt wird.
+Dies wird wiederholt, bis in einem Schritt mit einer Wahrscheinlichkeit von $(1 - \sigma)$ keine neue Anweisung eingefügt wird.
 Durch dieses Vorgehen sinkt die Wahrscheinlichkeit weitere Anweisungen einzufügen exponentiell.
 $i$ oder mehr Anweisungen werden also nur mit einer Wahrscheinlichkeit von $\sigma^i$ eingefügt.
 
-Mit dem bis hier beschriebenen Mutationsoperator können Testfälle länger und kürzer werden und sogar entfallen.
+Mit dem bis hier beschriebenen Mutationsoperator können Testfälle länger werden, kürzer werden, oder sogar entfallen.
 Es ist aber bisher nicht möglich, dass neue Testfälle entstehen und auch durch die Rekombination kann die Anzahl der Testfälle in einer Testsuite nicht größer werden, als die Anzahl der Testfälle im größeren Elternteil.
 Aus diesem Grund wird bei der Mutation einer Testsuite nach dem Mutieren der Testfälle mit einer Wahrscheinlichkeit von $\sigma'$ ein zufälliger neuer Testfall erzeugt.
 Genau wie bei dem Einfügen von Anweisungen werden hier mit exponentiell sinkender Wahrscheinlichkeit weitere Testfälle hinzugefügt.
 
-Um einen Testfall zu Erzeugen, wird eine zufällig Länge $l \sim [1, L]$ gewählt (wobei $L$ die maximal zugelassene Länge von Testfällen ist) und es werden so lange neue Anweisungen, wie bei der Mutation von Testfällen, eingefügt, bis der neue Testfall die gewünschte Länge erreicht hat.
+Um einen Testfall zu erzeugen, wird eine zufällig Länge $l \sim [1, L]$ gewählt (wobei $L$ die maximal zugelassene Länge von Testfällen ist) und es werden so lange neue Anweisungen, wie bei der Mutation von Testfällen, eingefügt, bis der neue Testfall die gewünschte Länge erreicht hat.
 
-Nun da die Mutation von Testsuites definiert ist, ist es leicht die Anfangspopulation zu definieren.
+Nun da die Mutation von Testsuites definiert ist, ist es leicht, die Anfangspopulation zu definieren.
 Als Anfangspopulation wird eine vorgegebene Anzahl an Testsuites erzeugt, indem jede mit einer vorgegeben Anzahl an zufälligen Testfällen befüllt wird.
 Die zufälligen Testfälle werden dabei genau wie bei der Mutation von Testsuites erstellt.
 
@@ -210,14 +212,14 @@ Als letztes muss für den genetischen Algorithmus noch die Fitnessfunktion defin
 Hier implementiert EvoSuite verschiedene Ansätze.
 Z. B. können Testfälle mit \textit{Mutation-Testing} generiert werden \cite{emse14_mutation}.
 In dieser Arbeit wird jedoch die Maximierung der Testabdeckung aus \cite{TSE12_EvoSuite} betrachtet.
-Gesucht ist dabei eine Testsuite, die mit möglichst wenig Anweisungen, möglichst viele Zweige der getesteten Klasse ausführt.
+Gesucht ist dabei eine Testsuite, die mit möglichst wenig Anweisungen möglichst viele Zweige der getesteten Klasse ausführt.
 Jede Methode hat dabei einen Programmpfad (den Körper der Methode), welcher sich an einer \lstinline{if}-Anweisung in zwei Pfade aufteilt.
 Diese Pfade können sich selbst wieder aufteilen oder wieder zu einem Pfad zusammenlaufen.
 Da EvoSuite nicht Quellcode, sondern Bytecode betrachtet, sind kompliziertere Anweiungen, wie \lstinline{switch}-Anweisungen oder Schleifen bereits in einfache Verzweigungen übersetzt worden.
 Eine optimale Testsuite führt demnach jede Anweisung in der getesteten Klasse aus, indem jede Bedingung mindestens einmal zu wahr und falsch evaluiert wird.
 
 Da genetische Algorithmen durch Mutation nur kleine zufällige Änderungen erzeugen, ist es wichtig, dass bereits kleine Änderungen eine Verbesserung der Fitness erreichen können.
-Wenn sich die Fitnessfunktion nur verbessert, wenn mehr Programmpfade abgedeckt werden, ist es sehr unwahrscheinlich, dass eine kleine Änderung die Fitness verbessert, da es sehr schwer ist genau die richtigen Werte zu erraten um eine Bedingung zu erfüllen.
+Wenn sich die Fitnessfunktion nur verbessert, wenn mehr Programmpfade abgedeckt werden, ist es sehr unwahrscheinlich, dass eine kleine Änderung die Fitness verbessert, da es sehr schwer ist, genau die richtigen Werte zu erraten, um eine Bedingung zu erfüllen.
 Aus diesem Grund wird die \textit{branch distance} $d_{min}(b, T)$ von \citet{10.1109/32.57624} verwendet.
 
 \begin{figure}[h]
@@ -252,18 +254,18 @@ public void test10() throws Throwable {
 	\label{fig:branch_distance}
 \end{figure}
 
-Die Idee hierbei ist, dass eine Ausführung einer Bedingung besser ist, wenn die Variablen der Bedingung weniger geändert werden müssen, um es zu erfüllen.
+Die Idee hierbei ist, dass eine Ausführung einer Bedingung besser ist, wenn die Variablen der Bedingung weniger geändert werden müssen, um sie zu erfüllen.
 \cref{fig:branch_distance} zeigt ein Beispiel, wie die \textit{branch distance} für einen Zweig \texttt{b} vom Wert einer Variable \texttt{n} abhängt.
 Wenn die Variable \texttt{n} den Wert 1 hat, muss sie noch um 16 geändert werden, um die Bedingung zu erfüllen.
 Wenn die Variable \texttt{n} den Wert 10 hat, muss sie nur noch um 7 geändert werden.
-Demnach ist der rechte Testfall näher daran Zweig \texttt{b} abzudecken.
+Demnach ist der rechte Testfall näher am Ziel, Zweig \texttt{b} abzudecken.
 Die \textit{branch distance} einer Testsuite ist einfach das Minimum der \textit{branch distances} der einzelnen Testfälle.
 
-Tatsächlich ist die Berechnung der \textit{branch distance} etwas komplizierter, so wird z. B. bei Bedingungen, die zu wahr evaluieren sollen noch eine Konstante $k > 0$ addiert, es müssen auch komplexe Bedingungen mit mehreren Variablen berücksichtigt werden und manche Bedingungen werden wegen Verschachtelung gar nicht ausgeführt, bevor andere Bedingungen erfolgreich sind.
+Tatsächlich ist die Berechnung der \textit{branch distance} etwas komplizierter, so wird z. B. bei Bedingungen, die zu wahr evaluieren sollen, noch eine Konstante $k > 0$ addiert, es müssen auch komplexe Bedingungen mit mehreren Variablen berücksichtigt werden, und manche Bedingungen werden wegen Verschachtelung gar nicht ausgeführt, bevor andere Bedingungen erfolgreich sind.
 Um die Fitnessfunktion von EvoSuite zu verstehen sind diese Details aber nicht wichtig.
 
-Die Fitnessfunktion soll also alle Methoden ($M$) der getesteten Klasse ausführen und in den Methoden alle Zweige ($B$).
-Für eine Testsuite $T$ ergibt sich damit die zu minimierende Fitnessfunktion in \cref{fig:fitnessfunktion}.
+Eine optimale Testsuite $T$ soll also die Menge aller Methoden der getesteten Klasse $M$ ausführen und in den Methoden die Menge aller Zweige $B$.
+Damit ergibt sich die zu minimierende Fitnessfunktion in \cref{fig:fitnessfunktion}.
 $M_T$ ist dabei die Menge der Methoden der getesteten Klasse, die durch die Testsuite abgedeckt werden und die Funktion $v(x)$ ist eine Normalisierungsfunktion um die \textit{branch distance} in einen Wertebereich von 0 bis 1 zu übersetzen.
 
 \begin{figure}[h]
@@ -298,10 +300,10 @@ EvoSuite nutzt für das Erzeugen von Orakeln sogenanntes \textit{Mutation-Testin
 Die Idee dabei ist, das zu testende Programm durch kleine Mutationen zu verändern, um zu sehen, welche Orakel diese Änderung bemerken würden.
 Mutation bedeutet hier etwas anderes als in dem genetischen Algorithmus aus \cref{sec:erzeugen_von_testfaellen}.
 Mutationen sind hier kleine Änderungen, die typische Programmierfehler darstellen sollen.
-Das kann zum Beispiel das Austauschen von arithmetischen Operationen, oder das Entfernen von Methodenaufrufen sein.
+Das kann zum Beispiel das Austauschen von arithmetischen Operationen oder das Entfernen von Methodenaufrufen sein.
 Die vollständige Liste dieser Mutationsoperatoren befindet sich in \cite{emse14_mutation}.
 
-Jedes mutierte Programm wird mit dem Originalprogramm verglichen und alle Orakel, die einen Unterschied zwischen den Beiden feststellen, werden mit dem Mutanten assoziiert.
+Jedes mutierte Programm wird mit dem Originalprogramm verglichen und alle Orakel, die einen Unterschied zwischen den beiden feststellen, werden mit dem Mutanten assoziiert.
 Man spricht hier auch davon, dass das Orakel den Mutanten tötet.
 Als Orakel dienen in EvoSuite \textit{Assertions}.
 Nach \citep{TSE12_Mutation} werden hier sieben Arten von \textit{Assertions} unterschieden:
@@ -326,12 +328,10 @@ EvoSuite konnte sich dabei gegenüber den anderen Werkzeugen durchsetzen und erz
 Im Jahr 2015 belegte EvoSuite den zweiten Platz \cite{7173585}.
 Die Ergebnisse des Wettbewerbs im Jahr 2014 konnte ich leider nicht finden.
 
-\section{Praxistauglichkeit}
-
 \section{Evaluation}
 
 EvoSuite wird öffentlich auf GitHub gehostet, wodurch der Quellcode einfach mit Git heruntergeladen werden konnte.
-Mit einer Maven 3.6.2 Installation (\url{https://maven.apache.org/}) konnten ich leicht eigene Versionen von EvoSuite basierend auf dem \textit{master-Branch} und \textit{1.0.6-Tag} bauen.
+Mit einer Maven 3.6.2 Installation (\url{https://maven.apache.org/}) konnte ich leicht eigene Versionen von EvoSuite basierend auf dem \textit{master-Branch} und \textit{1.0.6-Tag} bauen.
 Leider schlugen einige Tests im \textit{evosuite-client}-Projekt fehl, daher musste ich Maven mit \texttt{mvn install -DskipTests} aufrufen.
 
 Da EvoSuite Testfälle generiert, die von einem Tester evaluiert werden müssen, um Fehler zu finden, wäre es für diese Seminararbeit zu aufwändig EvoSuite an einer echten Bibliothek zu evaluieren.
@@ -339,13 +339,19 @@ Stattdessen habe ich ein paar sehr einfache Klassen geschrieben und aus diesen m
 
 EvoSuite kann per Kommandozeile aufgerufen werden und unterstützt eine große Anzahl and Parametern.
 Da die kleinen Beispiele, die ich verwendete, keine externen Bibliotheken benutzen, benötigte ich für diese Beispiele nur den \texttt{-target} Parameter.
-Ein Aufruf von EvoSuite sieht damit wie folgt aus: \texttt{java -jar evosuite-master-1.0.6.jar -target classesDir}
+Ein Aufruf von EvoSuite sieht damit wie folgt aus: \texttt{java -jar evosuite-master-1.0.6.jar -target classesDir -seed 0}
 
-In all diesen einfachen Beispielen erreichte EvoSuite einen Mutationscore von über 65\% bei einer Zweigabdeckung von 100\% (Gemessen mit \texttt{java -jar evosuite-1.0.6.jar -target bin/main -class Fakultaet -projectCP bin/test -seed 0 -measureCoverage -criterion MUTATION:BRANCH}).
-Der Mutationscore erschien mir etwas niedrig für so einfache Programme, insbesondere bei einer Zweigabdeckung von 100\%.
+In all diesen einfachen Beispielen erreichte EvoSuite einen \textit{mutation score} von über 65\% bei einer Zweigabdeckung von 100\%.
+Der \textit{mutation score} erschien mir etwas niedrig für so einfache Programme, insbesondere bei einer Zweigabdeckung von 100\%.
 \cref{fig:fakultaet} zeigt als konkretes Beispiel eine einfache Fakultätsfunktion.
-Mit einem Seed von 0 generierte EvoSuite Tests mit einem Mutationscore von 85\%, d. h. nur 85\% der Mutanten wurden durch die Tests getötet.
-Die von EvoSuite generierten Tests sind in \cref{fig:fakultaet_tests} zu sehen. 
+Mit einem Seed von 0 generierte EvoSuite Tests mit einem \textit{mutation score} von 68\% (Gemessen mit \texttt{java -jar evosuite-1.0.6.jar -target classesDir -class Fakultaet -projectCP testClassesDir -seed 0 -measureCoverage -criterion MUTATION:BRANCH}).
+D. h. nur 68\% der Mutanten wurden durch die Tests getötet.
+Die von EvoSuite generierten Tests sind in \cref{fig:fakultaet_tests} zu sehen.
+Hier fällt auf, dass EvoSuite offenbar keinen großen Wert auf Randfälle legt.
+Der Testfall \texttt{test0} deckt mit dem Wert 16 einen Randfall ab (16 ist der größte Wert, bei dem die \lstinline{if}-Anweisung nicht ausgeführt wird).
+Der entsprechende Randfall für die Gegenseite mit einem Wert von 17 wird jedoch nicht abgedeckt.
+Solche Randfälle abzudecken ist jedoch eine einfache Möglichkeit um den \textit{mutation score} zu verbessert.
+Ändert man den Wert in \texttt{test1} von 3628800 zu 17, verbessert sich der \textit{mutation score} von 68\% zu 74\%, ohne dass sich dies negativ auf die Abdeckung auswirkt.
 
 \begin{figure}[h]
 	\begin{lstlisting}[basicstyle=\ttfamily\tiny]
@@ -368,7 +374,7 @@ public class Fakultaet {
 	\label{fig:fakultaet}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h]
 	\begin{lstlisting}[basicstyle=\ttfamily\tiny]
 @Test(timeout = 4000)
 public void test0()  throws Throwable  {
@@ -401,7 +407,10 @@ public void test2()  throws Throwable  {
 	\label{fig:fakultaet_tests}
 \end{figure}
 
-Erklären warum Mutationscore so niedrig.
+Der Grund dafür, dass EvoSuite kaum Tests für solche Randfälle generiert, besteht vermutlich darin, dass die Fitnessfunktion aus \cref{fig:fitnessfunktion} keinen Unterschied zwischen Testsuites macht, die alle Zweige abdecken.
+Wenn beide Zweige einer Bedingung abgedeckt sind, ist die \textit{branch distance} 0 und wirkt sich nicht mehr auf die Fitness aus.
+Möglicherweise könnte hier eine mehrdimensionale Bewertung eine Verbesserung bringen, in der bei gleicher \textit{branch distance} die \textit{branch distance} zum jeweils anderen Zweig der Bedingung betrachtet wird.
+Dies könnte sich allerdings auch negativ auf die Evolution im genetischen Algorithmus auswirken.
 
 \section{Fazit}
 
