@@ -63,14 +63,15 @@ Diese Seminararbeit gibt einen Überblick über die Funktionsweise von EvoSuite.
 
 \section{Einleitung}
 
-Das Testen von Software ist ein wichtiger Teil der Softwareentwicklung, so schreiben \citet{myers2004art}:
+Das Testen von Software ist ein wichtiger Teil der Softwareentwicklung.
+So schreiben \citet{myers2004art}:
 \begin{quote}
 it [is] a well-known rule of thumb that in a typical programming project approximately 50 percent of the elapsed time and more than 50 percent of the total cost [are] expended in testing the program or system being developed.
 \end{quote}
-Daher ist es kaum verwunderlich, dass es zahlreiche Werkzeuge gibt, die helfen sollen das Testen von Software zu automatisieren.
+Daher ist es kaum verwunderlich, dass es zahlreiche Werkzeuge gibt, die helfen sollen, das Testen von Software zu automatisieren.
 EvoSuite geht noch einen Schritt weiter: hier wird nicht versucht das Testen der Software zu automatisieren, sondern das Erstellen von automatisierten Tests selbst durch Automatisierung zu vereinfachen.
 Der Fokus liegt dabei auf der Optimierung eines \textit{test last} Ansatzes, d. h. getestet wird erst, nachdem das eigentliche Programm fertig implementiert ist.
-Bei diesem Ansatz würde sich ein Softwaretester zunächst Szenarien überlegen, mit denen er möglichst viele Pfade des Programms abdeckt und diese als Unittests ausformulieren.
+Bei diesem Ansatz würde sich ein Softwaretester zunächst Szenarien überlegen, mit denen er möglichst viele Pfade des Programms abdeckt und diese als Unittests ausformuliert.
 Mithilfe von sogenannten Orakeln wird dabei ein bestimmtes Verhalten des Programms definiert.
 Verhält sich das Programm anders als von den Orakeln vorgegeben, so schlägt der Test fehl und es wurde ein Bug gefunden.
 
@@ -79,7 +80,7 @@ Ein Softwaretester muss sich dann nicht mehr selbst Szenarien überlegen, sonder
 Dazu nutzt EvoSuite einen genetischen Algorithmus mit dem zufällige Test-fälle immer weiter verbessert werden, bis sie eine möglichst hohe Testabdeckung erreichen.
 Die Testfälle werden dann minimiert um die Arbeit des Softwaretesters zu vereinfachen und es werden mit sogenanntem \textit{Mutation-Testing} möglichst repräsentative Orakel ausgewählt.
 
-EvoSuite wurde seit 2010 immer weiter entwickelt und es sind verschiedene Algorithmen für das generieren von Testfällen implementiert, die über die Kommandozeile ein- und ausgeschaltet werden können.
+EvoSuite wurde seit 2010 immer weiter entwickelt und es sind verschiedene Algorithmen für das Generieren von Testfällen implementiert, die über die Kommandozeile ein- und ausgeschaltet werden können.
 Dazu haben die Autoren von EvoSuite auf der Internetseite (\url{http://www.evosuite.org/publications/}) 54 Artikel über die Konzepte in und die Evaluation von EvoSuite und dessen Vorgänger ${\mu}Test$ veröffentlicht.
 Um den vorgegebenen Umfang einzuhalten, kann diese Seminararbeit nur Überblick über einen kleinen Teil von EvoSuite geben.
 
@@ -91,15 +92,15 @@ Die Idee dabei ist es, den Prozess der Evolution und natürlichen Auslese aus de
 Dazu werden Lösungskandidaten für das Optimierungsproblem als Individuen betrachtet.
 Die Menge der betrachteten Individuen nennt man auch Population oder Generation.
 
-Ausgehend von einer Anfangspopulation werden mit einer bestimmten Wahrscheinlichkeit durch Rekombination und/oder Mutation neue Individuen erzeugt.
+Ausgehend von einer Anfangspopulation werden mit einer bestimmten Wahrscheinlichkeit durch Rekombination und Mutation neue Individuen erzeugt.
 Bei einer Rekombination werden aus mehreren Eltern-Individuen ein oder mehrere neue Kind-Individuen erzeugt, während bei einer Mutation aus nur einem Individuum durch eine kleine Änderung ein neues Individuum entsteht.
 Die neuen Individuen werden anhand einer Fitnessfunktion bewertet und anhand von dieser Bewertung wird eine Menge der Individuen ausgewählt, um die neue Population zu bilden.
 Die restlichen Individuen werden verworfen.
 
-Dieser iterative Prozess wird so lange ausgeführt, bis ein Individuum gefunden wurde, welches das Optimierungsproblem optimal löst, bis eine vorgegebene Anzahl an Generationen entwickelt wurde, oder bis die verfügbare Zeit aufgebraucht ist.
+Dieser iterative Prozess wird so lange ausgeführt, bis entweder ein Individuum gefunden wurde, welches das Optimierungsproblem optimal löst, bis eine vorgegebene Anzahl an Generationen entwickelt wurde, oder bis die verfügbare Zeit aufgebraucht ist.
 In jedem Fall ist das Ergebnis des genetischen Algorithmus das beste Individuum.
 
-Um ein konkretes Optimierungsproblem mit einem genetischen Algorithmus zu lösen, muss genau definiert werden: was ein Individuum ist, aus welchen Individuen die Anfangspopulation besteht, wie die Rekombinations- und Mutationsoperatoren neue Individuen erzeugen und wie die Fitnessfunktion aussieht.
+Um ein konkretes Optimierungsproblem mit einem genetischen Algorithmus zu lösen, muss genau definiert werden, was ein Individuum ist, aus welchen Individuen die Anfangspopulation besteht, wie die Rekombinations- und Mutationsoperatoren neue Individuen erzeugen und wie die Fitnessfunktion aussieht.
 Dies ist von Problem zu Problem unterschiedlich.
 
 \section{Erzeugen von Testfällen}
@@ -108,10 +109,11 @@ Dies ist von Problem zu Problem unterschiedlich.
 \subsection{Betrachten von ganzen Testsuites auf einmal}
 
 EvoSuite beginnt mit dem Generieren von Testfällen ohne Orakel.
-Dafür werden verschiedene Algorithmen angeboten, in dieser Seminararbeit wird jedoch nur das Verbessern von ganzen Testsuites hinsichtlich der Testabdeckung mit einem genetischen Algorithmus nach \cite{TSE12_EvoSuite} beschrieben.
+Dafür werden verschiedene Algorithmen angeboten.
+In dieser Seminararbeit wird jedoch nur das Verbessern von ganzen Testsuites hinsichtlich der Testabdeckung mit einem genetischen Algorithmus nach \cite{TSE12_EvoSuite} beschrieben.
 
-Die Verbesserung von ganzen Testsuites auf einmal ist dabei eine wichtige Neuerung, die vor EvoSuite, nach bestem Wissen der Autoren, nicht verwendet wurde.
-Nach \cite{TSE12_EvoSuite} betrachteten die meisten anderen Werkzeuge nur einzelne Programmpfade auf einmal und versuchten einzelne Testfälle zu generieren, die die ausgewählten Pfade abdeckten.
+Die Verbesserung von Testsuites in ihrer Gesamtheit ist dabei eine wichtige Neuerung, die vor EvoSuite, nach bestem Wissen der Autoren, nicht verwendet wurde.
+Nach \cite{TSE12_EvoSuite} betrachteten die meisten anderen Werkzeuge nur einzelne Programmpfade sequenziell und versuchten Testfälle zu generieren, die diese ausgewählten Pfade abdeckten.
 Ein großes Problem bei diesem Ansatz ist jedoch, dass nicht jeder Programmpfad auch erreichbar ist.
 Wenn versucht wird einen unerreichbaren Pfad zu erreichen, dann ist der dafür verwendete Aufwand verschwendet.
 Ob ein bestimmter Pfad überhaupt erreichbar ist, ist allerdings ein unentscheidbares Problem, da man sonst das Halteproblem lösen könnte.
@@ -339,7 +341,7 @@ EvoSuite kann per Kommandozeile aufgerufen werden und unterstützt eine große A
 Da die kleinen Beispiele, die ich verwendete, keine externen Bibliotheken benutzen, benötigte ich für diese Beispiele nur den \texttt{-target} Parameter.
 Ein Aufruf von EvoSuite sieht damit wie folgt aus: \texttt{java -jar evosuite-master-1.0.6.jar -target classesDir}
 
-In all diesen einfachen Beispielen erreichte EvoSuite einen Mutationscore von über 75\% bei einer Zweigabdeckung von 100\%.
+In all diesen einfachen Beispielen erreichte EvoSuite einen Mutationscore von über 65\% bei einer Zweigabdeckung von 100\% (Gemessen mit \texttt{java -jar evosuite-1.0.6.jar -target bin/main -class Fakultaet -projectCP bin/test -seed 0 -measureCoverage -criterion MUTATION:BRANCH}).
 Der Mutationscore erschien mir etwas niedrig für so einfache Programme, insbesondere bei einer Zweigabdeckung von 100\%.
 \cref{fig:fakultaet} zeigt als konkretes Beispiel eine einfache Fakultätsfunktion.
 Mit einem Seed von 0 generierte EvoSuite Tests mit einem Mutationscore von 85\%, d. h. nur 85\% der Mutanten wurden durch die Tests getötet.
